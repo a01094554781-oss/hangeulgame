@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <title>한글과자 아케이드</title>
+    <title>한글과자 게임</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -110,7 +110,7 @@
       const IconTimer = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" {...props}><line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/></svg>;
       const IconX = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M18 6 6 18"/><path d="m6 6 18 18"/></svg>;
 
-      // --- DATA (MASSIVE EXPANSION) ---
+      // --- DATA ---
       const INITIAL_DATA = [
         { initial: "ㄱ ㅅ", examples: ["감사", "구슬", "고수", "가슴", "기술", "기숙", "개선", "공사", "기사", "간식", "가설", "결석", "교실", "거실", "기습"] },
         { initial: "ㅇ ㅈ", examples: ["의자", "우주", "아주", "여자", "연주", "인정", "유저", "옷장", "운전", "이전", "완전", "역전", "연장", "입장", "오징어"] },
@@ -148,184 +148,147 @@
         { initial: "ㅁ ㅁ", examples: ["문명", "미모", "마마", "무명", "매매", "목명", "문맥", "마무리", "모모", "무무", "미미", "물물교환", "명명", "면면", "무말랭이"] }
       ];
 
+      // Difficulty tagging for Category Game
       const CATEGORY_DATA = [
-        { category: "과일", examples: ["사과", "포도", "바나나", "수박", "딸기", "복숭아", "참외", "멜론", "귤", "배", "망고", "키위", "자두", "체리", "파인애플", "블루베리", "석류", "레몬", "감", "대추"] },
-        { category: "동물", examples: ["호랑이", "사자", "토끼", "강아지", "고양이", "코끼리", "기린", "곰", "여우", "늑대", "사슴", "원숭이", "판다", "다람쥐", "햄스터", "얼룩말", "하마", "악어", "독수리", "펭귄"] },
-        { category: "나라", examples: ["한국", "미국", "일본", "중국", "프랑스", "독일", "영국", "이탈리아", "캐나다", "호주", "브라질", "스페인", "러시아", "인도", "베트남", "태국", "멕시코", "스위스", "네덜란드", "터키"] },
-        { category: "운동", examples: ["축구", "농구", "야구", "수영", "배구", "테니스", "골프", "탁구", "태권도", "배드민턴", "스키", "스케이트", "요가", "복싱", "볼링", "양궁", "육상", "유도", "펜싱", "하키"] },
-        { category: "색깔", examples: ["빨강", "파랑", "노랑", "초록", "보라", "검정", "하양", "분홍", "주황", "회색", "갈색", "하늘색", "연두색", "금색", "은색", "남색", "베이지색", "자주색", "청록색", "살구색"] },
-        { category: "학교", examples: ["연필", "지우개", "칠판", "책상", "선생님", "공책", "가방", "필통", "급식", "교복", "체육관", "운동장", "실내화", "숙제", "시험", "교과서", "방학", "졸업", "입학", "소풍"] },
-        { category: "음식", examples: ["피자", "치킨", "햄버거", "라면", "김밥", "비빔밥", "떡볶이", "스파게티", "초밥", "만두", "돈까스", "스테이크", "샐러드", "샌드위치", "국수", "불고기", "갈비찜", "된장찌개", "김치찌개", "카레"] },
-        { category: "직업", examples: ["의사", "선생님", "경찰관", "소방관", "요리사", "가수", "배우", "과학자", "운동선수", "변호사", "간호사", "군인", "디자이너", "프로그래머", "기자", "판사", "작가", "화가", "농부", "운전기사"] },
-        { category: "탈것", examples: ["버스", "택시", "기차", "비행기", "자전거", "오토바이", "지하철", "배", "헬리콥터", "트럭", "소방차", "구급차", "경찰차", "우주선", "킥보드", "유모차", "휠체어", "케이블카", "열기구", "잠수함"] },
-        { category: "가전제품", examples: ["냉장고", "세탁기", "청소기", "에어컨", "밥솥", "전자레인지", "텔레비전", "선풍기", "컴퓨터", "드라이기", "다리미", "오븐", "식기세척기", "가습기", "공기청정기", "토스터기", "믹서기", "제습기", "안마의자", "스피커"] },
-        { category: "학용품", examples: ["가위", "풀", "자", "볼펜", "필통", "색연필", "노트", "지우개", "샤프", "크레파스", "물감", "붓", "스케치북", "화이트", "테이프", "스테이플러", "클립", "압정", "포스트잇", "컴퍼스"] },
-        { category: "악기", examples: ["피아노", "기타", "바이올린", "드럼", "플루트", "하프", "단소", "리코더", "첼로", "트럼펫", "색소폰", "우쿨렐레", "실로폰", "탬버린", "캐스터네츠", "오르간", "가야금", "해금", "장구", "북"] },
-        { category: "날씨", examples: ["맑음", "흐림", "비", "눈", "바람", "태풍", "번개", "안개", "우박", "장마", "폭염", "한파", "소나기", "무지개", "구름", "황사", "미세먼지", "서리", "이슬", "가뭄"] },
-        { category: "감정", examples: ["기쁨", "슬픔", "화남", "놀람", "무서움", "행복", "사랑", "우울", "긴장", "부끄러움", "짜증", "신남", "심심함", "답답함", "즐거움", "편안함", "지루함", "외로움", "그리움", "고마움"] },
-        { category: "신체", examples: ["눈", "코", "입", "귀", "손", "발", "머리", "어깨", "무릎", "배", "등", "엉덩이", "손가락", "발가락", "목", "허리", "팔꿈치", "발목", "손목", "이마"] },
-        { category: "가구", examples: ["침대", "식탁", "의자", "소파", "책장", "서랍장", "옷장", "화장대", "거울", "책상", "신발장", "수납장", "협탁", "조명", "커튼", "카펫", "쿠션", "매트리스", "선반", "행거"] },
-        { category: "야채/채소", examples: ["오이", "당근", "양파", "파", "마늘", "배추", "무", "감자", "고구마", "호박", "고추", "상추", "깻잎", "브로콜리", "토마토", "가지", "시금치", "콩나물", "버섯", "피망"] },
-        { category: "간식", examples: ["과자", "초콜릿", "사탕", "젤리", "아이스크림", "케이크", "빵", "쿠키", "푸딩", "요거트", "떡", "와플", "마카롱", "도넛", "팝콘", "호떡", "붕어빵", "츄러스", "약과", "껌"] },
-        { category: "꽃", examples: ["장미", "해바라기", "무궁화", "벚꽃", "진달래", "개나리", "튤립", "백합", "국화", "카네이션", "코스모스", "민들레", "라일락", "연꽃", "동백꽃", "안개꽃", "수국", "나팔꽃", "봉숭아", "매화"] },
-        { category: "장소", examples: ["공원", "학교", "집", "병원", "도서관", "마트", "영화관", "놀이터", "수영장", "박물관", "미술관", "동물원", "식당", "카페", "백화점", "은행", "우체국", "약국", "미용실", "세탁소"] },
-        { category: "음료", examples: ["물", "우유", "주스", "콜라", "사이다", "커피", "녹차", "홍차", "코코아", "스무디", "에이드", "요구르트", "두유", "보리차", "식혜", "수정과", "이온음료", "핫초코", "맥주", "와인"] },
-        { category: "곤충", examples: ["개미", "나비", "벌", "잠자리", "매미", "무당벌레", "사마귀", "장수풍뎅이", "사슴벌레", "파리", "모기", "바퀴벌레", "거미", "지렁이", "달팽이", "귀뚜라미", "방아깨비", "소금쟁이", "물방개", "하루살이"] },
-        { category: "바다생물", examples: ["물고기", "오징어", "문어", "고래", "상어", "조개", "새우", "게", "불가사리", "해파리", "거북이", "돌고래", "멸치", "미역", "산호", "전복", "해삼", "멍게", "가오리", "복어"] },
-        { category: "부엌용품", examples: ["냄비", "후라이팬", "국자", "도마", "칼", "접시", "그릇", "컵", "숟가락", "젓가락", "포크", "주전자", "쟁반", "앞치마", "고무장갑", "수세미", "행주", "가위", "집게", "뒤집개"] },
-        { category: "편의점", examples: ["삼각김밥", "컵라면", "도시락", "샌드위치", "햄버거", "음료수", "과자", "껌", "사탕", "아이스크림", "핫바", "소시지", "맥주", "휴지", "건전지", "우산", "마스크", "충전기", "생수", "커피"] },
-        { category: "캠핑용품", examples: ["텐트", "침낭", "코펠", "버너", "의자", "테이블", "랜턴", "아이스박스", "돗자리", "망치", "모기향", "배낭", "수통", "나침반", "지도", "손전등", "로프", "화로대", "장작", "폴대"] },
-        { category: "영화장르", examples: ["액션", "코미디", "공포", "로맨스", "만화", "애니메이션", "다큐멘터리", "전쟁", "SF", "판타지", "뮤지컬", "스릴러", "드라마", "서부", "범죄", "가족", "모험", "미스터리", "느와르", "재난"] },
-        { category: "보석", examples: ["다이아몬드", "루비", "사파이어", "에메랄드", "진주", "금", "은", "수정", "호박", "옥", "비취", "오팔", "자수정", "터키석", "탄생석", "백금", "청금석", "페리도트", "가넷", "토파즈"] },
-        { category: "우주", examples: ["태양", "지구", "달", "별", "화성", "목성", "토성", "금성", "수성", "천왕성", "해왕성", "명왕성", "혜성", "은하수", "블랙홀", "우주선", "인공위성", "우주인", "로켓", "별똥별"] },
-        { category: "계절/시간", examples: ["봄", "여름", "가을", "겨울", "아침", "점심", "저녁", "밤", "새벽", "오전", "오후", "주말", "평일", "휴일", "명절", "크리스마스", "설날", "추석", "생일", "기념일"] }
+        { category: "과일", difficulty: "EASY", examples: ["사과", "포도", "바나나", "수박", "딸기", "복숭아", "참외", "멜론", "귤", "배"] },
+        { category: "동물", difficulty: "EASY", examples: ["호랑이", "사자", "토끼", "강아지", "고양이", "코끼리", "기린", "곰", "여우", "늑대"] },
+        { category: "색깔", difficulty: "EASY", examples: ["빨강", "파랑", "노랑", "초록", "보라", "검정", "하양", "분홍", "주황", "회색"] },
+        { category: "음식", difficulty: "EASY", examples: ["피자", "치킨", "햄버거", "라면", "김밥", "비빔밥", "떡볶이", "스파게티", "초밥", "만두"] },
+        { category: "신체", difficulty: "EASY", examples: ["눈", "코", "입", "귀", "손", "발", "머리", "어깨", "무릎", "배"] },
+        { category: "가족", difficulty: "EASY", examples: ["엄마", "아빠", "할머니", "할아버지", "동생", "누나", "형", "언니", "이모", "삼촌"] },
+        
+        { category: "운동", difficulty: "MEDIUM", examples: ["축구", "농구", "야구", "수영", "배구", "테니스", "골프", "탁구", "태권도", "배드민턴"] },
+        { category: "학교", difficulty: "MEDIUM", examples: ["연필", "지우개", "칠판", "책상", "선생님", "공책", "가방", "필통", "급식", "교복"] },
+        { category: "직업", difficulty: "MEDIUM", examples: ["의사", "선생님", "경찰관", "소방관", "요리사", "가수", "배우", "과학자", "운동선수", "변호사"] },
+        { category: "탈것", difficulty: "MEDIUM", examples: ["버스", "택시", "기차", "비행기", "자전거", "오토바이", "지하철", "배", "헬리콥터", "트럭"] },
+        { category: "가전제품", difficulty: "MEDIUM", examples: ["냉장고", "세탁기", "청소기", "에어컨", "밥솥", "전자레인지", "텔레비전", "선풍기", "컴퓨터", "드라이기"] },
+        { category: "악기", difficulty: "MEDIUM", examples: ["피아노", "기타", "바이올린", "드럼", "플루트", "하프", "단소", "리코더", "첼로", "트럼펫"] },
+        { category: "날씨", difficulty: "MEDIUM", examples: ["맑음", "흐림", "비", "눈", "바람", "태풍", "번개", "안개", "우박", "장마"] },
+        { category: "가구", difficulty: "MEDIUM", examples: ["침대", "식탁", "의자", "소파", "책장", "서랍장", "옷장", "화장대", "거울", "책상"] },
+        { category: "야채/채소", difficulty: "MEDIUM", examples: ["오이", "당근", "양파", "파", "마늘", "배추", "무", "감자", "고구마", "호박"] },
+        
+        { category: "감정", difficulty: "HARD", examples: ["기쁨", "슬픔", "화남", "놀람", "무서움", "행복", "사랑", "우울", "긴장", "부끄러움"] },
+        { category: "음료", difficulty: "HARD", examples: ["물", "우유", "주스", "콜라", "사이다", "커피", "녹차", "홍차", "코코아", "스무디"] },
+        { category: "곤충", difficulty: "HARD", examples: ["개미", "나비", "벌", "잠자리", "매미", "무당벌레", "사마귀", "장수풍뎅이", "사슴벌레", "파리"] },
+        { category: "바다생물", difficulty: "HARD", examples: ["물고기", "오징어", "문어", "고래", "상어", "조개", "새우", "게", "불가사리", "해파리"] },
+        { category: "캠핑용품", difficulty: "HARD", examples: ["텐트", "침낭", "코펠", "버너", "의자", "테이블", "랜턴", "아이스박스", "돗자리", "망치"] },
+        { category: "영화장르", difficulty: "HARD", examples: ["액션", "코미디", "공포", "로맨스", "만화", "애니메이션", "다큐멘터리", "전쟁", "SF", "판타지"] },
+        { category: "보석", difficulty: "HARD", examples: ["다이아몬드", "루비", "사파이어", "에메랄드", "진주", "금", "은", "수정", "호박", "옥"] },
+        { category: "우주", difficulty: "HARD", examples: ["태양", "지구", "달", "별", "화성", "목성", "토성", "금성", "수성", "천왕성"] },
+        { category: "계절/시간", difficulty: "HARD", examples: ["봄", "여름", "가을", "겨울", "아침", "점심", "저녁", "밤", "새벽", "오전"] }
       ];
 
       const SPEED_WORDS_POOL = [
-        { text: "과자" }, { text: "가방" }, { text: "가위" },
-        { text: "거울" }, { text: "구름" }, { text: "김치" },
-        { text: "경찰" }, { text: "기차" }, { text: "공책" },
-        { text: "가족" }, { text: "구두" }, { text: "국기" },
-        { text: "고기" }, { text: "가을" }, { text: "겨울" },
-        { text: "공원" }, { text: "공항" }, { text: "가수" },
-        { text: "가게" }, { text: "그림" }, { text: "구슬" },
-        { text: "감자" }, { text: "고구마" }, { text: "귤" },
-        { text: "나무" }, { text: "나비" }, { text: "낚시" },
-        { text: "남자" }, { text: "날씨" }, { text: "노래" },
-        { text: "눈사람" }, { text: "농구" }, { text: "냉장고" },
-        { text: "냄비" }, { text: "누나" }, { text: "남동생" },
-        { text: "눈" }, { text: "날개" }, { text: "다리" },
-        { text: "달력" }, { text: "도서관" }, { text: "도시락" },
-        { text: "돼지" }, { text: "동물원" }, { text: "두부" },
-        { text: "딸기" }, { text: "떡볶이" }, { text: "달" },
-        { text: "당근" }, { text: "도넛" }, { text: "동화" },
-        { text: "동전" }, { text: "대문" }, { text: "라디오" },
-        { text: "라면" }, { text: "로봇" }, { text: "리모컨" },
-        { text: "레몬" }, { text: "리본" }, { text: "마음" },
-        { text: "모자" }, { text: "무지개" }, { text: "문" },
-        { text: "물" }, { text: "미국" }, { text: "미술" },
-        { text: "머리" }, { text: "마을" }, { text: "마트" },
-        { text: "만두" }, { text: "말" }, { text: "모기" },
-        { text: "목걸이" }, { text: "무" }, { text: "물고기" },
-        { text: "바나나" }, { text: "바다" }, { text: "바람" },
-        { text: "박수" }, { text: "반지" }, { text: "발" },
-        { text: "배" }, { text: "버스" }, { text: "병원" },
-        { text: "비행기" }, { text: "빵" }, { text: "방" },
-        { text: "밤" }, { text: "밥" }, { text: "바지" },
-        { text: "비누" }, { text: "비" }, { text: "뱀" },
-        { text: "별" }, { text: "불" }, { text: "사과" },
-        { text: "사랑" }, { text: "사진" }, { text: "산" },
-        { text: "선물" }, { text: "선생님" }, { text: "소방관" },
-        { text: "손" }, { text: "수박" }, { text: "수영" },
-        { text: "시간" }, { text: "시계" }, { text: "신발" },
-        { text: "사자" }, { text: "사탕" }, { text: "새" },
-        { text: "색종이" }, { text: "소" }, { text: "소금" },
-        { text: "숟가락" }, { text: "숲" }, { text: "스키" },
-        { text: "아기" }, { text: "아빠" }, { text: "아이스크림" },
-        { text: "안경" }, { text: "약국" }, { text: "양말" },
-        { text: "어머니" }, { text: "얼굴" }, { text: "여름" },
-        { text: "여행" }, { text: "연필" }, { text: "영화" },
-        { text: "우산" }, { text: "우유" }, { text: "운동" },
-        { text: "의자" }, { text: "이불" }, { text: "인형" },
-        { text: "자전거" }, { text: "자동차" }, { text: "장갑" },
-        { text: "장난감" }, { text: "전화" }, { text: "접시" },
-        { text: "지갑" }, { text: "지도" }, { text: "지우개" },
-        { text: "집" }, { text: "잠자리" }, { text: "저녁" },
-        { text: "주스" }, { text: "쥐" }, { text: "지하철" },
-        { text: "창문" }, { text: "책" }, { text: "책상" },
-        { text: "청소기" }, { text: "축구" }, { text: "친구" },
-        { text: "치과" }, { text: "치마" }, { text: "칫솔" },
-        { text: "카메라" }, { text: "컴퓨터" }, { text: "코" },
-        { text: "코끼리" }, { text: "케이크" }, { text: "택시" },
-        { text: "태권도" }, { text: "텔레비전" }, { text: "토끼" },
-        { text: "토마토" }, { text: "파" }, { text: "파랑" },
-        { text: "편지" }, { text: "포도" }, { text: "피아노" },
-        { text: "피자" }, { text: "학교" }, { text: "한국" },
-        { text: "할머니" }, { text: "햄버거" }, { text: "호랑이" },
-        { text: "화장실" }, { text: "회사" }, { text: "휴지" },
-        { text: "가면" }, { text: "가로수" }, { text: "가슴" },
-        { text: "개미" }, { text: "거미" }, { text: "거북이" },
-        { text: "건물" }, { text: "걸레" }, { text: "검정" },
-        { text: "게임" }, { text: "고래" }, { text: "고추" },
-        { text: "골프" }, { text: "공" }, { text: "공룡" },
-        { text: "나팔" }, { text: "낙타" }, { text: "냄새" },
-        { text: "넥타이" }, { text: "노트" }, { text: "농부" },
-        { text: "뉴스" }, { text: "느낌" }, { text: "늑대" },
-        { text: "다람쥐" }, { text: "다리미" }, { text: "단추" },
-        { text: "닭" }, { text: "담요" }, { text: "대나무" },
-        { text: "대추" }, { text: "도끼" }, { text: "도둑" },
-        { text: "도토리" }, { text: "독수리" }, { text: "돌" },
-        { text: "라이터" }, { text: "럭비" }, { text: "로켓" },
-        { text: "롤러" }, { text: "립스틱" },
-        { text: "마스크" }, { text: "마이크" }, { text: "마차" },
-        { text: "만화" }, { text: "망치" }, { text: "매미" },
-        { text: "머리카락" }, { text: "먹물" }, { text: "메뚜기" },
-        { text: "멜론" }, { text: "면도기" }, { text: "명함" },
-        { text: "바구니" }, { text: "바늘" }, { text: "바퀴" },
-        { text: "박스" }, { text: "발가락" }, { text: "밤하늘" },
-        { text: "배추" }, { text: "백조" }, { text: "버섯" },
-        { text: "벌" }, { text: "베개" }, { text: "벽" },
-        { text: "사다리" }, { text: "사람" }, { text: "사슴" },
-        { text: "사이이다" }, { text: "산토끼" }, { text: "살구" },
-        { text: "삽" }, { text: "상어" }, { text: "새우" },
-        { text: "샌드위치" }, { text: "생일" }, { text: "샴푸" },
-        { text: "아파트" }, { text: "악기" }, { text: "안개" },
-        { text: "알통" }, { text: "양" }, { text: "양동이" },
-        { text: "양초" }, { text: "얼룩말" }, { text: "엄마" },
-        { text: "에어컨" }, { text: "연기" }, { text: "연못" },
-        { text: "자" }, { text: "자두" }, { text: "자석" },
-        { text: "잠수함" }, { text: "장미" }, { text: "장화" },
-        { text: "저금통" }, { text: "전구" }, { text: "젓가락" },
-        { text: "종이" }, { text: "주사위" }, { text: "주전자" },
-        { text: "참외" }, { text: "창고" }, { text: "채소" },
-        { text: "철봉" }, { text: "청진기" }, { text: "체리" },
-        { text: "초" }, { text: "초밥" }, { text: "총" },
-        { text: "축구공" }, { text: "치약" },
-        { text: "칼" }, { text: "캥거루" }, { text: "컵" },
-        { text: "콩" }, { text: "크레파스" }, { text: "키위" },
-        { text: "카드" }, { text: "카레" }, { text: "카페" },
-        { text: "코스모스" }, { text: "코트" }, { text: "콜라" },
-        { text: "크리스마스" }, { text: "큰북" },
-        { text: "타이어" }, { text: "탁구" }, { text: "탈" },
-        { text: "탑" }, { text: "태극기" }, { text: "테니스" },
-        { text: "토스트" }, { text: "톱" }, { text: "통장" },
-        { text: "트럼펫" },
-        { text: "파인애플" }, { text: "펭귄" }, { text: "포크" },
-        { text: "파리" }, { text: "파프리카" }, { text: "판다" },
-        { text: "팔" }, { text: "팥" }, { text: "팽이" },
-        { text: "편의점" }, { text: "포도주" }, { text: "폭죽" },
-        { text: "표지판" }, { text: "피망" },
-        { text: "하마" }, { text: "하늘" }, { text: "해" },
-        { text: "하루" }, { text: "할아버지" }, { text: "항아리" },
-        { text: "해마" }, { text: "핸드폰" }, { text: "허수아비" },
-        { text: "헬리콥터" }, { text: "호루라기" }, { text: "호수" }
+        { text: "과자" }, { text: "가방" }, { text: "가위" }, { text: "거울" }, { text: "구름" }, { text: "김치" }, { text: "경찰" }, { text: "기차" }, { text: "공책" }, { text: "가족" }, { text: "구두" }, { text: "국기" }, { text: "고기" }, { text: "가을" }, { text: "겨울" }, { text: "공원" }, { text: "공항" }, { text: "가수" }, { text: "가게" }, { text: "그림" }, { text: "구슬" }, { text: "감자" }, { text: "귤" }, { text: "가면" }, { text: "가슴" }, { text: "개미" }, { text: "거미" }, { text: "건물" }, { text: "걸레" }, { text: "검정" }, { text: "게임" }, { text: "고래" }, { text: "고추" }, { text: "골프" }, { text: "공" }, { text: "공룡" },
+        { text: "나무" }, { text: "나비" }, { text: "낚시" }, { text: "남자" }, { text: "날씨" }, { text: "노래" }, { text: "농구" }, { text: "냄비" }, { text: "누나" }, { text: "눈" }, { text: "날개" }, { text: "나팔" }, { text: "낙타" }, { text: "냄새" }, { text: "노트" }, { text: "농부" }, { text: "뉴스" }, { text: "느낌" }, { text: "늑대" },
+        { text: "다리" }, { text: "달력" }, { text: "돼지" }, { text: "두부" }, { text: "딸기" }, { text: "달" }, { text: "당근" }, { text: "도넛" }, { text: "동화" }, { text: "동전" }, { text: "대문" }, { text: "단추" }, { text: "닭" }, { text: "담요" }, { text: "대추" }, { text: "도끼" }, { text: "도둑" }, { text: "돌" },
+        { text: "라면" }, { text: "로봇" }, { text: "레몬" }, { text: "리본" }, { text: "럭비" }, { text: "로켓" }, { text: "롤러" },
+        { text: "마음" }, { text: "모자" }, { text: "문" }, { text: "물" }, { text: "미국" }, { text: "미술" }, { text: "머리" }, { text: "마을" }, { text: "마트" }, { text: "만두" }, { text: "말" }, { text: "모기" }, { text: "무" }, { text: "마차" }, { text: "만화" }, { text: "망치" }, { text: "매미" }, { text: "먹물" }, { text: "멜론" }, { text: "명함" },
+        { text: "바다" }, { text: "바람" }, { text: "박수" }, { text: "반지" }, { text: "발" }, { text: "배" }, { text: "버스" }, { text: "병원" }, { text: "빵" }, { text: "방" }, { text: "밤" }, { text: "밥" }, { text: "바지" }, { text: "비누" }, { text: "비" }, { text: "뱀" }, { text: "별" }, { text: "불" }, { text: "바늘" }, { text: "바퀴" }, { text: "박스" }, { text: "배추" }, { text: "백조" }, { text: "버섯" }, { text: "벌" }, { text: "베개" }, { text: "벽" },
+        { text: "사과" }, { text: "사랑" }, { text: "사진" }, { text: "산" }, { text: "선물" }, { text: "손" }, { text: "수박" }, { text: "수영" }, { text: "시간" }, { text: "시계" }, { text: "신발" }, { text: "사자" }, { text: "사탕" }, { text: "새" }, { text: "소" }, { text: "소금" }, { text: "숲" }, { text: "스키" }, { text: "아기" }, { text: "아빠" }, { text: "안경" }, { text: "약국" }, { text: "양말" }, { text: "엄마" }, { text: "얼굴" }, { text: "여름" }, { text: "여행" }, { text: "연필" }, { text: "영화" }, { text: "우산" }, { text: "우유" }, { text: "운동" }, { text: "의자" }, { text: "이불" }, { text: "인형" }, { text: "악어" }, { text: "약" }, { text: "여우" }, { text: "연" }, { text: "오리" }, { text: "오이" }, { text: "옷" }, { text: "왕" }, { text: "은행" }, { text: "입" }, { text: "악기" }, { text: "안개" }, { text: "알통" }, { text: "양" }, { text: "양초" }, { text: "연기" }, { text: "연못" },
+        { text: "지갑" }, { text: "지도" }, { text: "집" }, { text: "저녁" }, { text: "주스" }, { text: "쥐" }, { text: "창문" }, { text: "책" }, { text: "책상" }, { text: "축구" }, { text: "친구" }, { text: "치과" }, { text: "치마" }, { text: "칫솔" }, { text: "자" }, { text: "자두" }, { text: "자석" }, { text: "장미" }, { text: "장화" }, { text: "전구" }, { text: "종이" }, { text: "참외" }, { text: "창고" }, { text: "채소" }, { text: "철봉" }, { text: "체리" }, { text: "초" }, { text: "초밥" }, { text: "총" }, { text: "치약" },
+        { text: "칼" }, { text: "컵" }, { text: "콩" }, { text: "키위" }, { text: "카드" }, { text: "카레" }, { text: "카페" }, { text: "코트" }, { text: "콜라" }, { text: "큰북" },
+        { text: "택시" }, { text: "토끼" }, { text: "파" }, { text: "파랑" }, { text: "편지" }, { text: "포도" }, { text: "피자" }, { text: "학교" }, { text: "한국" }, { text: "휴지" }, { text: "탈" }, { text: "탑" }, { text: "톱" }, { text: "통장" }, { text: "팔" }, { text: "팥" }, { text: "팽이" }, { text: "해" }, { text: "하루" }, { text: "호수" },
+        
+        // 3-char words (Medium)
+        { text: "자동차" }, { text: "자전거" }, { text: "바나나" }, { text: "호랑이" }, { text: "고양이" }, { text: "강아지" }, { text: "비행기" }, { text: "소방관" }, { text: "선생님" }, { text: "경찰관" }, { text: "태권도" }, { text: "아파트" }, { text: "무지개" }, { text: "도시락" }, { text: "떡볶이" }, { text: "라디오" }, { text: "리모컨" }, { text: "물고기" }, { text: "메뚜기" }, { text: "면도기" }, { text: "목걸이" }, { text: "밤하늘" }, { text: "색종이" }, { text: "숟가락" }, { text: "잠자리" }, { text: "지하철" }, { text: "청소기" }, { text: "카메라" }, { text: "컴퓨터" }, { text: "코끼리" }, { text: "케이크" }, { text: "캥거루" }, { text: "크레파스" }, { text: "토마토" }, { text: "피아노" }, { text: "할머니" }, { text: "햄버거" }, { text: "화장실" }, { text: "가로수" }, { text: "거북이" }, { text: "다람쥐" }, { text: "다리미" }, { text: "대나무" }, { text: "도토리" }, { text: "독수리" }, { text: "라이터" }, { text: "립스틱" }, { text: "마이크" }, { text: "머리핀" }, { text: "바구니" }, { text: "발가락" }, { text: "사다리" }, { text: "산토끼" }, { text: "샌드위치" }, { text: "소나기" }, { text: "신호등" }, { text: "쓰레기" }, { text: "아저씨" }, { text: "아줌마" }, { text: "양동이" }, { text: "얼룩말" }, { text: "에어컨" }, { text: "잠수함" }, { text: "저금통" }, { text: "젓가락" }, { text: "주사위" }, { text: "주전자" }, { text: "청진기" }, { text: "축구공" }, { text: "코스모스" }, { text: "타이어" }, { text: "토스트" }, { text: "트럼펫" }, { text: "파인애플" }, { text: "포도주" }, { text: "표지판" }, { text: "해바라기" }, { text: "핸드폰" }, { text: "호루라기" },
+
+        // 4+ char words (Hard)
+        { text: "아이스크림" }, { text: "텔레비전" }, { text: "크리스마스" }, { text: "엘리베이터" }, { text: "할아버지" }, { text: "헬리콥터" }, { text: "허수아비" }, { text: "대한민국" }, { text: "오토바이" }, { text: "전자레인지" }, { text: "소방자동차" }, { text: "구급자동차" }, { text: "경찰자동차" }, { text: "편의점" }, { text: "놀이터" }, { text: "동물원" }, { text: "식물원" }, { text: "미술관" }, { text: "박물관" }, { text: "영화관" }, { text: "수영장" }, { text: "미용실" }, { text: "문구점" }, { text: "서점" }, { text: "제과점" }, { text: "안경점" }, { text: "세탁소" }, { text: "주유소" }, { text: "우체국" }, { text: "소방서" }, { text: "경찰서" }, { text: "주민센터" }, { text: "보건소" }, { text: "아프리카" }, { text: "아메리카" }, { text: "아시아" }, { text: "유럽" }, { text: "오세아니아" }, { text: "남극" }, { text: "북극" }, { text: "태평양" }, { text: "대서양" }, { text: "인도양" }, { text: "북극해" }, { text: "남극해" }, { text: "백두산" }, { text: "한라산" }, { text: "설악산" }, { text: "지리산" }, { text: "금강산" }, { text: "제주도" }, { text: "독도" }, { text: "울릉도" }, { text: "강화도" }, { text: "거제도" }, { text: "진도" }, { text: "완도" }, { text: "남해도" }, { text: "안면도" }, { text: "대부도" }, { text: "월미도" }, { text: "오이도" }, { text: "제부도" }, { text: "선풍기" }, { text: "청소기" }, { text: "세탁기" }, { text: "건조기" }, { text: "식기세척기" }, { text: "공기청정기" }, { text: "가습기" }, { text: "제습기" }, { text: "다리미" }, { text: "드라이기" }, { text: "고데기" }, { text: "면도기" }, { text: "전동칫솔" }, { text: "체중계" }, { text: "혈압계" }, { text: "체온계" }, { text: "계산기" }
       ];
 
       // --- LOGIC ---
       const shuffle = (array) => [...array].sort(() => Math.random() - 0.5);
 
-      // Deck variables stored in memory
       let initialDeck = [];
       let categoryDeck = [];
       let speedDeck = [];
 
       const getNextItemFromDeck = (deck, masterData) => {
         let currentDeck = deck || [];
-        
-        // Refill if empty
         if (currentDeck.length === 0) {
             currentDeck = shuffle(masterData);
         }
-        
         const item = currentDeck.pop();
-        
-        // Safety check
         if (!item) {
              const freshDeck = shuffle(masterData);
              return { item: freshDeck.pop(), newDeck: freshDeck };
         }
-        
         return { item, newDeck: currentDeck };
+      };
+
+      const generateInitials = async (difficulty) => {
+        await new Promise(resolve => setTimeout(resolve, 300));
+        // Initials data is general, random for now
+        if (!initialDeck || initialDeck.length === 0) initialDeck = shuffle(INITIAL_DATA);
+        const { item, newDeck } = getNextItemFromDeck(initialDeck, INITIAL_DATA);
+        initialDeck = newDeck;
+        return item ? item.initial : "ㄱ ㅅ";
+      };
+
+      const generateInitialExamples = async (initials) => {
+        await new Promise(resolve => setTimeout(resolve, 200));
+        const item = INITIAL_DATA.find(d => d.initial === initials);
+        return item ? shuffle(item.examples).slice(0, 6) : ["데이터 없음"];
+      };
+
+      const generateCategory = async (difficulty) => {
+        await new Promise(resolve => setTimeout(resolve, 300));
+        
+        // Filter category data by difficulty
+        let filteredData = CATEGORY_DATA.filter(c => c.difficulty === difficulty);
+        if (filteredData.length === 0) filteredData = CATEGORY_DATA; // Fallback
+
+        if (!categoryDeck || categoryDeck.length === 0 || !categoryDeck.some(c => c.difficulty === difficulty)) {
+            categoryDeck = shuffle(filteredData);
+        }
+        
+        const { item, newDeck } = getNextItemFromDeck(categoryDeck, filteredData);
+        categoryDeck = newDeck;
+        return item ? item.category : "과일";
+      };
+
+      const generateCategoryExamples = async (category) => {
+        await new Promise(resolve => setTimeout(resolve, 200));
+        const item = CATEGORY_DATA.find(d => d.category === category);
+        return item ? shuffle(item.examples).slice(0, 6) : ["데이터 없음"];
+      };
+
+      const fetchSpeedWords = async (difficulty) => {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Filter words by length based on difficulty
+        let filteredPool = SPEED_WORDS_POOL;
+        if (difficulty === 'EASY') {
+            filteredPool = SPEED_WORDS_POOL.filter(w => w.text.length <= 2);
+        } else if (difficulty === 'MEDIUM') {
+            filteredPool = SPEED_WORDS_POOL.filter(w => w.text.length === 3);
+        } else if (difficulty === 'HARD') {
+            filteredPool = SPEED_WORDS_POOL.filter(w => w.text.length >= 4);
+        }
+
+        // Fallback if pool is empty (should not happen with massive data)
+        if (filteredPool.length < 10) filteredPool = SPEED_WORDS_POOL;
+
+        // Reset deck if empty or difficulty changed (simple check: length)
+        if (!speedDeck || speedDeck.length < 50) {
+            speedDeck = shuffle(filteredPool);
+        }
+
+        const selected = speedDeck.splice(0, 50);
+        
+        // Refill if needed
+        if (selected.length < 50) {
+            const refill = shuffle(filteredPool);
+            speedDeck = refill;
+            selected.push(...speedDeck.splice(0, 50 - selected.length));
+        }
+
+        return selected.map((item, idx) => ({
+            id: `speed-${Date.now()}-${idx}`,
+            text: item.text,
+            hint: item.hint
+        }));
       };
 
       // --- UI COMPONENTS ---
@@ -342,7 +305,7 @@
       };
 
       // --- VIEW COMPONENTS ---
-      const InitialGame = ({ onGameOver }) => {
+      const InitialGame = ({ difficulty, onGameOver }) => {
         const [initials, setInitials] = useState('');
         const [loading, setLoading] = useState(false);
         const [examples, setExamples] = useState([]);
@@ -352,15 +315,18 @@
         const loadNew = () => {
           setLoading(true); setShowExamples(false);
           try {
-            const { item, newDeck } = getNextItemFromDeck(initialDeck, INITIAL_DATA);
-            initialDeck = newDeck;
-            setInitials(item.initial);
-            setExamples(shuffle(item.examples).slice(0, 6));
+            // Note: Initial game uses mixed difficulty for now as data is mostly 2-char
+            generateInitials(difficulty).then(res => {
+                setInitials(res);
+                generateInitialExamples(res).then(exs => {
+                    setExamples(exs);
+                    setLoading(false);
+                });
+            });
           } catch(e) { 
             setInitials("ㄱ ㅅ"); 
-            setExamples(["감사", "구슬"]); 
+            setLoading(false);
           }
-          setTimeout(() => setLoading(false), 300);
         };
 
         useEffect(() => { loadNew(); }, []);
@@ -377,7 +343,6 @@
                 </div>
               ) : (
                 <div className="py-10 bg-theme-bg rounded-2xl border-2 border-theme-black mb-6 shadow-pop-sm">
-                    {/* Explicit very dark color for text visibility */}
                     <div className="text-7xl font-display text-gray-900 tracking-[0.2em]">{initials}</div>
                     <p className="text-theme-purple text-sm font-bold mt-4">초성 퀴즈</p>
                 </div>
@@ -404,7 +369,7 @@
         );
       };
 
-      const CategoryGame = ({ onGameOver }) => {
+      const CategoryGame = ({ difficulty, onGameOver }) => {
         const [category, setCategory] = useState('');
         const [loading, setLoading] = useState(false);
         const [examples, setExamples] = useState([]);
@@ -413,15 +378,13 @@
 
         const loadNew = () => {
           setLoading(true); setShowExamples(false);
-          try {
-            const { item, newDeck } = getNextItemFromDeck(categoryDeck, CATEGORY_DATA);
-            categoryDeck = newDeck;
-            setCategory(item.category);
-            setExamples(shuffle(item.examples).slice(0, 6));
-          } catch(e) { 
-            setCategory("과일"); 
-          }
-          setTimeout(() => setLoading(false), 300);
+          generateCategory(difficulty).then(res => {
+             setCategory(res);
+             generateCategoryExamples(res).then(exs => {
+                 setExamples(exs);
+                 setLoading(false);
+             });
+          });
         };
 
         useEffect(() => { loadNew(); }, []);
@@ -440,7 +403,7 @@
                 <div className="py-10 bg-theme-bg rounded-2xl border-2 border-theme-black mb-6 shadow-pop-sm">
                     <div className="flex justify-center mb-4 text-theme-purple"><IconGrid width={40} height={40} /></div>
                     <div className="text-5xl font-display text-gray-900 mb-2">{category}</div>
-                    <p className="text-theme-purple text-sm font-bold">주제어</p>
+                    <p className="text-theme-purple text-sm font-bold">주제어 ({difficulty === 'EASY' ? '순한맛' : difficulty === 'MEDIUM' ? '중간맛' : '매운맛'})</p>
                 </div>
               )}
 
@@ -465,7 +428,7 @@
         );
       };
 
-      const SpeedGame = ({ onGameOver }) => {
+      const SpeedGame = ({ difficulty, onGameOver }) => {
         const [words, setWords] = useState([]);
         const [currentIndex, setCurrentIndex] = useState(0);
         const [loading, setLoading] = useState(true);
@@ -476,26 +439,12 @@
 
         useEffect(() => {
             setLoading(true);
-            try {
-                if (speedDeck.length < 50) speedDeck = shuffle(SPEED_WORDS_POOL);
-                
-                // Fetch a large batch to prevent repetition
-                const selected = speedDeck.splice(0, 50);
-                
-                // If deck ran out, refill and complete the batch
-                if (selected.length < 50) {
-                    const refill = shuffle(SPEED_WORDS_POOL);
-                    speedDeck = refill;
-                    const more = speedDeck.splice(0, 50 - selected.length);
-                    selected.push(...more);
-                }
-                
-                setWords(selected.map((w, i) => ({...w, id: i})));
+            // Fetch words based on difficulty
+            fetchSpeedWords(difficulty).then(data => {
+                setWords(data);
                 setGameActive(true);
-            } catch(e) { 
-                setWords([{text: "오류", hint: "다시시도"}]); 
-            }
-            setLoading(false);
+                setLoading(false);
+            });
             return () => clearInterval(timerRef.current);
         }, []);
 
@@ -511,11 +460,9 @@
         const handleNextWord = () => { if (!gameActive) return; setScore(p => p + 10); nextCard(); };
         const handlePass = () => { if (!gameActive) return; nextCard(); };
         const nextCard = () => { 
-            // Simply iterate. Since we fetched 50, it's enough for 60s.
             if (currentIndex < words.length - 1) {
                 setCurrentIndex(p => p + 1); 
             } else {
-                // End game if we somehow ran out of 50 words
                 setGameActive(false); 
                 onGameOver({ score }); 
             }
@@ -533,9 +480,10 @@
             <div className="card-pop p-8 w-full text-center relative overflow-hidden bg-white">
                <div className="py-8 w-full my-2">
                   <div className="text-7xl font-display text-gray-900 mb-6 animate-pop key={currentWord.text}">{currentWord.text}</div>
-                  {/* Hint Removed as requested */}
                </div>
-               <p className="text-theme-purple/60 text-xs mt-4 font-bold uppercase tracking-widest">SPEED MODE</p>
+               <p className="text-theme-purple/60 text-xs mt-4 font-bold uppercase tracking-widest">
+                   SPEED MODE ({difficulty === 'EASY' ? '순한맛' : difficulty === 'MEDIUM' ? '중간맛' : '매운맛'})
+               </p>
             </div>
 
             <div className="grid grid-cols-2 gap-4 w-full">
@@ -548,6 +496,7 @@
 
       const App = () => {
         const [currentGame, setCurrentGame] = useState('NONE');
+        const [difficulty, setDifficulty] = useState('EASY'); // EASY, MEDIUM, HARD
         const [lastStats, setLastStats] = useState(null);
 
         const startGame = (type) => { setCurrentGame(type); setLastStats(null); };
@@ -560,7 +509,7 @@
               <div className="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
                 <div className="flex items-center gap-3 cursor-pointer group" onClick={resetToMenu}>
                   <div className="bg-theme-purple text-white p-2 rounded-xl shadow-pop-sm border-2 border-theme-black group-hover:scale-110 transition-transform"><IconCookie /></div>
-                  <h1 className="text-xl md:text-2xl font-display text-theme-black tracking-tight mt-1">한글과자 아케이드</h1>
+                  <h1 className="text-xl md:text-2xl font-display text-theme-black tracking-tight mt-1">한글과자 게임</h1>
                 </div>
                 {currentGame !== 'NONE' && <button onClick={resetToMenu} className="text-theme-dark transition-colors p-2 hover:bg-theme-bg rounded-xl"><IconArrowLeft /></button>}
               </div>
@@ -576,9 +525,26 @@
                            <span className="text-theme-purple">AI</span>와 함께하는<br/>한글 과자 놀이
                         </h2>
                      </div>
-                     <p className="text-gray-900 text-xl font-hand bg-white inline-block px-6 py-2 rounded-full border-2 border-theme-black shadow-pop-sm">
-                        오늘의 간식은 어떤 단어인가요? 🍪
-                     </p>
+                     
+                     {/* Difficulty Selector */}
+                     <div className="bg-white p-4 rounded-2xl border-2 border-theme-black shadow-pop-sm inline-block">
+                        <p className="text-sm font-bold text-gray-500 mb-2">난이도 선택 (DIFFICULTY)</p>
+                        <div className="flex gap-2">
+                            {['EASY', 'MEDIUM', 'HARD'].map(d => (
+                                <button 
+                                    key={d}
+                                    onClick={() => setDifficulty(d)}
+                                    className={`px-4 py-2 rounded-xl font-display text-lg border-2 border-theme-black transition-all
+                                    ${difficulty === d 
+                                        ? 'bg-theme-yellow text-theme-black shadow-pop-sm transform -translate-y-1' 
+                                        : 'bg-gray-100 text-gray-400 hover:bg-white'}
+                                    `}
+                                >
+                                    {d === 'EASY' ? '순한맛' : d === 'MEDIUM' ? '중간맛' : '매운맛'}
+                                </button>
+                            ))}
+                        </div>
+                     </div>
                   </section>
                   
                   <div className="grid md:grid-cols-3 gap-6">
@@ -625,9 +591,9 @@
                       </div>
                    ) : (
                       <>
-                          {currentGame === 'INITIAL' && <InitialGame onGameOver={handleGameOver} />}
-                          {currentGame === 'CATEGORY' && <CategoryGame onGameOver={handleGameOver} />}
-                          {currentGame === 'SPEED' && <SpeedGame onGameOver={handleGameOver} />}
+                          {currentGame === 'INITIAL' && <InitialGame difficulty={difficulty} onGameOver={handleGameOver} />}
+                          {currentGame === 'CATEGORY' && <CategoryGame difficulty={difficulty} onGameOver={handleGameOver} />}
+                          {currentGame === 'SPEED' && <SpeedGame difficulty={difficulty} onGameOver={handleGameOver} />}
                       </>
                    )}
                 </div>
