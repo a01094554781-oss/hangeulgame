@@ -9,7 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
     
     <!-- React & ReactDOM (UMD) -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -24,26 +24,26 @@
           extend: {
             fontFamily: {
               sans: ['"Nanum Gothic"', 'sans-serif'],
-              display: ['"Jua"', 'sans-serif'],
+              display: ['"Black Han Sans"', '"Jua"', 'sans-serif'], // 폰트 변경: 더 두껍고 레트로한 느낌
             },
             colors: {
-              brand: {
-                50: '#faf5ff', 100: '#f3e8ff', 200: '#e9d5ff', 300: '#d8b4fe',
-                400: '#c084fc', 500: '#a855f7', 600: '#9333ea', 700: '#7e22ce',
-                800: '#6b21a8', 900: '#581c87',
-              },
-              accent: {
-                DEFAULT: '#facc15', hover: '#eab308', light: '#fef08a',
-                shadow: '#b45309' // darker for 3d effect
+              arcade: {
+                bg: '#0f0518',      // Very Dark Purple
+                card: '#1a0b2e',    // Dark Purple
+                primary: '#d946ef', // Neon Pink
+                secondary: '#8b5cf6', // Neon Purple
+                accent: '#facc15',  // Neon Yellow
+                success: '#4ade80', // Neon Green
+                cyan: '#22d3ee',    // Neon Cyan
               }
             },
             animation: {
               'bounce-slight': 'bounce-slight 2s infinite',
               'pop': 'pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
               'float': 'float 6s ease-in-out infinite',
-              'float-delayed': 'float 6s ease-in-out 3s infinite',
-              'wiggle': 'wiggle 1s ease-in-out infinite',
-              'confetti': 'confetti 1s ease-out forwards',
+              'grid-move': 'grid-move 20s linear infinite',
+              'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'neon-flicker': 'neon-flicker 3s infinite alternate',
             },
             keyframes: {
               'bounce-slight': {
@@ -58,13 +58,13 @@
                 '0%, 100%': { transform: 'translateY(0)' },
                 '50%': { transform: 'translateY(-20px)' },
               },
-              'wiggle': {
-                '0%, 100%': { transform: 'rotate(-3deg)' },
-                '50%': { transform: 'rotate(3deg)' },
+              'grid-move': {
+                '0%': { transform: 'translateY(0)' },
+                '100%': { transform: 'translateY(40px)' },
               },
-              'confetti': {
-                '0%': { transform: 'translateY(0) rotate(0)', opacity: '1' },
-                '100%': { transform: 'translateY(100vh) rotate(720deg)', opacity: '0' },
+              'neon-flicker': {
+                '0%, 19%, 21%, 23%, 25%, 54%, 56%, 100%': { opacity: '1', filter: 'brightness(1.2)' },
+                '20%, 24%, 55%': { opacity: '0.5', filter: 'brightness(0.8)' },
               }
             }
           },
@@ -74,34 +74,95 @@
     
     <style>
       body {
-        background-color: #faf5ff;
-        background-image: radial-gradient(#e9d5ff 1.5px, transparent 1.5px);
-        background-size: 32px 32px;
+        background-color: #0f0518;
+        color: white;
         overscroll-behavior: none;
         overflow-x: hidden;
       }
-      
-      /* 3D Button Press Effect */
-      .btn-3d {
-        transition: all 0.1s;
-        transform: translateY(0);
+
+      /* CRT Scanline Effect */
+      .scanlines {
+        background: linear-gradient(
+          to bottom,
+          rgba(255,255,255,0),
+          rgba(255,255,255,0) 50%,
+          rgba(0,0,0,0.2) 50%,
+          rgba(0,0,0,0.2)
+        );
+        background-size: 100% 4px;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        pointer-events: none;
+        z-index: 50;
       }
-      .btn-3d:active {
-        transform: translateY(4px);
-        box-shadow: none !important;
+      
+      .vignette {
+        background: radial-gradient(circle, rgba(0,0,0,0) 60%, rgba(0,0,0,0.6) 100%);
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        pointer-events: none;
+        z-index: 51;
       }
 
-      /* Text Outline for arcade feel */
-      .text-outline {
-        text-shadow: 
-          2px 2px 0px #581c87, 
-          -1px -1px 0 #581c87,  
-          1px -1px 0 #581c87,
-          -1px 1px 0 #581c87,
-          1px 1px 0 #581c87;
+      /* Moving Grid Background */
+      .perspective-grid {
+        position: fixed;
+        width: 200%;
+        height: 200%;
+        top: -50%;
+        left: -50%;
+        background-image: 
+          linear-gradient(to right, rgba(217, 70, 239, 0.1) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(139, 92, 246, 0.1) 1px, transparent 1px);
+        background-size: 40px 40px;
+        transform: perspective(500px) rotateX(60deg);
+        animation: grid-move 5s linear infinite;
+        z-index: -1;
+        pointer-events: none;
       }
-      .text-outline-light {
-        text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+
+      /* Neon Text Styles */
+      .text-neon-pink {
+        text-shadow: 0 0 5px #d946ef, 0 0 10px #d946ef, 0 0 20px #d946ef;
+      }
+      .text-neon-blue {
+        text-shadow: 0 0 5px #22d3ee, 0 0 10px #22d3ee;
+      }
+      .text-neon-yellow {
+        text-shadow: 0 0 5px #facc15, 0 0 10px #facc15;
+      }
+
+      /* Glassmorphism Card */
+      .glass-card {
+        background: rgba(26, 11, 46, 0.6);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      }
+
+      /* 3D Retro Button */
+      .btn-retro {
+        position: relative;
+        transition: all 0.1s;
+        top: 0;
+      }
+      .btn-retro::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 6px;
+        left: 0;
+        background-color: rgba(0,0,0,0.3);
+        border-radius: inherit;
+        z-index: -1;
+        transition: all 0.1s;
+      }
+      .btn-retro:active {
+        top: 6px;
+      }
+      .btn-retro:active::after {
+        top: 0;
       }
     </style>
   </head>
@@ -112,13 +173,12 @@
       const { useState, useEffect, useRef } = React;
 
       // --- ICONS ---
-      const IconCookie = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"/><path d="M8.5 8.5v.01"/><path d="M16 15.5v.01"/><path d="M12 12v.01"/><path d="M11 17v.01"/><path d="M7 14v.01"/></svg>;
+      const IconCookie = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="10"/><path d="M8.5 8.5v.01"/><path d="M16 15.5v.01"/><path d="M12 12v.01"/><path d="M11 17v.01"/><path d="M7 14v.01"/></svg>;
       const IconGrid = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 12h18"/><path d="M12 3v18"/></svg>;
       const IconZap = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>;
       const IconAlign = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M3 6h18"/><path d="M3 12h18"/><path d="M3 18h18"/></svg>;
       const IconTrophy = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>;
       const IconStar = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>;
-      const IconSparkles = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>;
       const IconArrowLeft = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>;
       const IconArrowRight = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>;
       const IconLightbulb = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-1 1.5-2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>;
@@ -179,36 +239,36 @@
       ];
 
       const CATEGORY_DATA = [
-        { category: "과일", examples: ["사과", "포도", "바나나", "수박", "딸기", "복숭아", "참외", "멜론", "귤", "배", "망고", "키위", "자두", "체리", "파인애플"] },
-        { category: "동물", examples: ["호랑이", "사자", "토끼", "강아지", "고양이", "코끼리", "기린", "곰", "여우", "늑대", "사슴", "원숭이", "판다", "다람쥐", "햄스터"] },
-        { category: "나라", examples: ["한국", "미국", "일본", "중국", "프랑스", "독일", "영국", "이탈리아", "캐나다", "호주", "브라질", "스페인", "러시아", "인도", "베트남"] },
-        { category: "운동", examples: ["축구", "농구", "야구", "수영", "배구", "테니스", "골프", "탁구", "태권도", "배드민턴", "스키", "스케이트", "요가", "복싱", "볼링"] },
-        { category: "색깔", examples: ["빨강", "파랑", "노랑", "초록", "보라", "검정", "하양", "분홍", "주황", "회색", "갈색", "하늘색", "연두색", "금색", "은색"] },
-        { category: "학교", examples: ["연필", "지우개", "칠판", "책상", "선생님", "공책", "가방", "필통", "급식", "교복", "체육관", "운동장", "실내화", "숙제", "시험"] },
-        { category: "음식", examples: ["피자", "치킨", "햄버거", "라면", "김밥", "비빔밥", "떡볶이", "스파게티", "초밥", "만두", "돈까스", "스테이크", "샐러드", "샌드위치", "국수"] },
-        { category: "직업", examples: ["의사", "선생님", "경찰관", "소방관", "요리사", "가수", "배우", "과학자", "운동선수", "변호사", "간호사", "군인", "디자이너", "프로그래머", "기자"] },
-        { category: "탈것", examples: ["버스", "택시", "기차", "비행기", "자전거", "오토바이", "지하철", "배", "헬리콥터", "트럭", "소방차", "구급차", "경찰차", "우주선", "킥보드"] },
-        { category: "가전제품", examples: ["냉장고", "세탁기", "청소기", "에어컨", "밥솥", "전자레인지", "텔레비전", "선풍기", "컴퓨터", "드라이기", "다리미", "오븐", "식기세척기", "가습기", "공기청정기"] },
-        { category: "학용품", examples: ["가위", "풀", "자", "볼펜", "필통", "색연필", "노트", "지우개", "샤프", "크레파스", "물감", "붓", "스케치북", "화이트", "테이프"] },
-        { category: "악기", examples: ["피아노", "기타", "바이올린", "드럼", "플루트", "하프", "단소", "리코더", "첼로", "트럼펫", "색소폰", "우쿨렐레", "실로폰", "탬버린", "캐스터네츠"] },
-        { category: "날씨", examples: ["맑음", "흐림", "비", "눈", "바람", "태풍", "번개", "안개", "우박", "장마", "폭염", "한파", "소나기", "무지개", "구름"] },
-        { category: "감정", examples: ["기쁨", "슬픔", "화남", "놀람", "무서움", "행복", "사랑", "우울", "긴장", "부끄러움", "짜증", "신남", "심심함", "답답함", "즐거움"] },
-        { category: "신체", examples: ["눈", "코", "입", "귀", "손", "발", "머리", "어깨", "무릎", "배", "등", "엉덩이", "손가락", "발가락", "목"] },
-        { category: "가구", examples: ["침대", "식탁", "의자", "소파", "책장", "서랍장", "옷장", "화장대", "거울", "책상", "신발장", "수납장", "협탁", "조명", "커튼"] },
-        { category: "야채/채소", examples: ["오이", "당근", "양파", "파", "마늘", "배추", "무", "감자", "고구마", "호박", "고추", "상추", "깻잎", "브로콜리", "토마토"] },
-        { category: "간식", examples: ["과자", "초콜릿", "사탕", "젤리", "아이스크림", "케이크", "빵", "쿠키", "푸딩", "요거트", "떡", "와플", "마카롱", "도넛", "팝콘"] },
-        { category: "꽃", examples: ["장미", "해바라기", "무궁화", "벚꽃", "진달래", "개나리", "튤립", "백합", "국화", "카네이션", "코스모스", "민들레", "라일락", "연꽃", "동백꽃"] },
-        { category: "장소", examples: ["공원", "학교", "집", "병원", "도서관", "마트", "영화관", "놀이터", "수영장", "박물관", "미술관", "동물원", "식당", "카페", "백화점"] },
-        { category: "음료", examples: ["물", "우유", "주스", "콜라", "사이다", "커피", "녹차", "홍차", "코코아", "스무디", "에이드", "요구르트", "두유", "보리차", "식혜"] },
-        { category: "곤충", examples: ["개미", "나비", "벌", "잠자리", "매미", "무당벌레", "사마귀", "장수풍뎅이", "사슴벌레", "파리", "모기", "바퀴벌레", "거미", "지렁이", "달팽이"] },
-        { category: "바다생물", examples: ["물고기", "오징어", "문어", "고래", "상어", "조개", "새우", "게", "불가사리", "해파리", "거북이", "돌고래", "멸치", "미역", "산호"] },
-        { category: "부엌용품", examples: ["냄비", "후라이팬", "국자", "도마", "칼", "접시", "그릇", "컵", "숟가락", "젓가락", "포크", "주전자", "쟁반", "앞치마", "고무장갑"] },
-        { category: "편의점", examples: ["삼각김밥", "컵라면", "도시락", "샌드위치", "햄버거", "음료수", "과자", "껌", "사탕", "아이스크림", "핫바", "소시지", "맥주", "휴지", "건전지"] },
-        { category: "캠핑용품", examples: ["텐트", "침낭", "코펠", "버너", "의자", "테이블", "랜턴", "아이스박스", "돗자리", "망치", "모기향", "배낭", "수통", "나침반", "지도"] },
-        { category: "영화장르", examples: ["액션", "코미디", "공포", "로맨스", "만화", "애니메이션", "다큐멘터리", "전쟁", "SF", "판타지", "뮤지컬", "스릴러", "드라마", "서부", "범죄"] },
-        { category: "보석", examples: ["다이아몬드", "루비", "사파이어", "에메랄드", "진주", "금", "은", "수정", "호박", "옥", "비취", "오팔", "자수정", "터키석", "탄생석"] },
-        { category: "우주", examples: ["태양", "지구", "달", "별", "화성", "목성", "토성", "금성", "수성", "천왕성", "해왕성", "명왕성", "혜성", "은하수", "블랙홀"] },
-        { category: "계절/시간", examples: ["봄", "여름", "가을", "겨울", "아침", "점심", "저녁", "밤", "새벽", "오전", "오후", "주말", "평일", "휴일", "명절"] }
+        { category: "과일", examples: ["사과", "포도", "바나나", "수박", "딸기", "복숭아", "참외", "멜론", "귤", "배"] },
+        { category: "동물", examples: ["호랑이", "사자", "토끼", "강아지", "고양이", "코끼리", "기린", "곰", "여우", "늑대"] },
+        { category: "나라", examples: ["한국", "미국", "일본", "중국", "프랑스", "독일", "영국", "이탈리아", "캐나다", "호주"] },
+        { category: "운동", examples: ["축구", "농구", "야구", "수영", "배구", "테니스", "골프", "탁구", "태권도", "배드민턴"] },
+        { category: "색깔", examples: ["빨강", "파랑", "노랑", "초록", "보라", "검정", "하양", "분홍", "주황", "회색"] },
+        { category: "학교", examples: ["연필", "지우개", "칠판", "책상", "선생님", "공책", "가방", "필통", "급식", "교복"] },
+        { category: "음식", examples: ["피자", "치킨", "햄버거", "라면", "김밥", "비빔밥", "떡볶이", "스파게티", "초밥", "만두"] },
+        { category: "직업", examples: ["의사", "선생님", "경찰관", "소방관", "요리사", "가수", "배우", "과학자", "운동선수", "변호사"] },
+        { category: "탈것", examples: ["버스", "택시", "기차", "비행기", "자전거", "오토바이", "지하철", "배", "헬리콥터", "트럭"] },
+        { category: "가전제품", examples: ["냉장고", "세탁기", "청소기", "에어컨", "밥솥", "전자레인지", "텔레비전", "선풍기", "컴퓨터", "드라이기"] },
+        { category: "학용품", examples: ["가위", "풀", "자", "볼펜", "필통", "색연필", "노트", "지우개", "샤프", "크레파스", "물감"] },
+        { category: "악기", examples: ["피아노", "기타", "바이올린", "드럼", "플루트", "하프", "단소", "리코더", "첼로", "트럼펫"] },
+        { category: "날씨", examples: ["맑음", "흐림", "비", "눈", "바람", "태풍", "번개", "안개", "우박", "장마"] },
+        { category: "감정", examples: ["기쁨", "슬픔", "화남", "놀람", "무서움", "행복", "사랑", "우울", "긴장", "부끄러움"] },
+        { category: "신체", examples: ["눈", "코", "입", "귀", "손", "발", "머리", "어깨", "무릎", "배"] },
+        { category: "가구", examples: ["침대", "식탁", "의자", "소파", "책장", "서랍장", "옷장", "화장대", "거울", "책상"] },
+        { category: "야채/채소", examples: ["오이", "당근", "양파", "파", "마늘", "배추", "무", "감자", "고구마", "호박"] },
+        { category: "간식", examples: ["과자", "초콜릿", "사탕", "젤리", "아이스크림", "케이크", "빵", "쿠키", "푸딩", "요거트"] },
+        { category: "꽃", examples: ["장미", "해바라기", "무궁화", "벚꽃", "진달래", "개나리", "튤립", "백합", "국화", "카네이션"] },
+        { category: "장소", examples: ["공원", "학교", "집", "병원", "도서관", "마트", "영화관", "놀이터", "수영장", "박물관"] },
+        { category: "음료", examples: ["물", "우유", "주스", "콜라", "사이다", "커피", "녹차", "홍차", "코코아", "스무디"] },
+        { category: "곤충", examples: ["개미", "나비", "벌", "잠자리", "매미", "무당벌레", "사마귀", "장수풍뎅이", "사슴벌레", "파리"] },
+        { category: "바다생물", examples: ["물고기", "오징어", "문어", "고래", "상어", "조개", "새우", "게", "불가사리", "해파리"] },
+        { category: "부엌용품", examples: ["냄비", "후라이팬", "국자", "도마", "칼", "접시", "그릇", "컵", "숟가락", "젓가락"] },
+        { category: "편의점", examples: ["삼각김밥", "컵라면", "도시락", "샌드위치", "햄버거", "음료수", "과자", "껌", "사탕", "아이스크림"] },
+        { category: "캠핑용품", examples: ["텐트", "침낭", "코펠", "버너", "의자", "테이블", "랜턴", "아이스박스", "돗자리", "망치"] },
+        { category: "영화장르", examples: ["액션", "코미디", "공포", "로맨스", "만화", "애니메이션", "다큐멘터리", "전쟁", "SF", "판타지"] },
+        { category: "보석", examples: ["다이아몬드", "루비", "사파이어", "에메랄드", "진주", "금", "은", "수정", "호박", "옥"] },
+        { category: "우주", examples: ["태양", "지구", "달", "별", "화성", "목성", "토성", "금성", "수성", "천왕성"] },
+        { category: "계절/시간", examples: ["봄", "여름", "가을", "겨울", "아침", "점심", "저녁", "밤", "새벽", "오전"] }
       ];
 
       const SPEED_WORDS_POOL = [
@@ -359,64 +419,27 @@
         }));
       };
 
-      // --- DECORATIVE COMPONENTS ---
-      const FloatingBackground = () => {
-        return (
-          <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-20">
-             {/* Floating Cookies */}
-             <div className="absolute top-10 left-10 text-brand-300 animate-float"><IconCookie width={48} height={48} /></div>
-             <div className="absolute bottom-20 right-20 text-brand-300 animate-float-delayed"><IconCookie width={64} height={64} /></div>
-             <div className="absolute top-1/2 left-1/4 text-brand-200 animate-float" style={{animationDuration: '8s'}}><IconStar width={32} height={32} /></div>
-             <div className="absolute top-1/4 right-1/4 text-brand-200 animate-float-delayed" style={{animationDuration: '10s'}}><IconSparkles width={40} height={40} /></div>
-             <div className="absolute bottom-10 left-1/3 text-brand-200 animate-wiggle"><IconZap width={36} height={36} /></div>
-          </div>
-        );
-      };
-
-      const Confetti = () => {
-        const [pieces, setPieces] = useState([]);
-        useEffect(() => {
-          const colors = ['#facc15', '#a855f7', '#fb7185', '#38bdf8', '#4ade80'];
-          const newPieces = Array.from({ length: 50 }).map((_, i) => ({
-            id: i,
-            left: Math.random() * 100 + '%',
-            animationDelay: Math.random() * 0.5 + 's',
-            backgroundColor: colors[Math.floor(Math.random() * colors.length)],
-            rotation: Math.random() * 360 + 'deg',
-          }));
-          setPieces(newPieces);
-        }, []);
-
-        return (
-          <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
-            {pieces.map(p => (
-              <div 
-                key={p.id}
-                className="absolute w-3 h-3 rounded-sm animate-confetti top-[-20px]"
-                style={{
-                  left: p.left,
-                  animationDelay: p.animationDelay,
-                  backgroundColor: p.backgroundColor,
-                  transform: `rotate(${p.rotation})`
-                }}
-              />
-            ))}
-          </div>
-        );
-      };
-
       // --- UI COMPONENTS ---
       const Button = ({ children, variant = 'primary', size = 'md', className = '', ...props }) => {
-        const baseStyles = "btn-3d font-display rounded-2xl border-b-4 flex items-center justify-center gap-2 transition-transform duration-100";
+        const baseStyles = "btn-retro font-display rounded-xl border-b-4 flex items-center justify-center gap-2 transform active:scale-95";
         const variants = {
-          primary: "bg-brand-500 text-white border-brand-700 hover:bg-brand-400 active:border-t-4 active:border-b-0",
-          secondary: "bg-white text-brand-700 border-brand-200 hover:bg-brand-50 active:border-t-4 active:border-b-0",
-          danger: "bg-red-400 text-white border-red-600 hover:bg-red-500 active:border-t-4 active:border-b-0",
-          success: "bg-accent text-brand-900 border-accent-shadow hover:bg-accent-hover active:border-t-4 active:border-b-0",
+          primary: "bg-arcade-primary text-white border-fuchsia-800 hover:bg-fuchsia-400 text-neon-pink",
+          secondary: "bg-arcade-secondary text-white border-violet-800 hover:bg-violet-400",
+          danger: "bg-red-500 text-white border-red-800 hover:bg-red-400",
+          success: "bg-arcade-success text-green-900 border-green-700 hover:bg-green-300",
         };
         const sizes = { sm: "px-3 py-1 text-sm", md: "px-6 py-3 text-lg", lg: "px-8 py-4 text-xl" };
         return <button className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`} {...props}>{children}</button>;
       };
+
+      // --- DECORATION ---
+      const FloatingElements = () => (
+        <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+           <div className="absolute top-10 left-10 text-arcade-primary opacity-20 animate-float"><IconCookie width={60} height={60} /></div>
+           <div className="absolute bottom-20 right-10 text-arcade-secondary opacity-20 animate-float" style={{animationDelay: '1s'}}><IconZap width={80} height={80} /></div>
+           <div className="absolute top-1/2 right-20 text-arcade-accent opacity-20 animate-pulse-fast"><IconStar width={40} height={40} /></div>
+        </div>
+      );
 
       // --- VIEW COMPONENTS ---
       const InitialGame = ({ onGameOver }) => {
@@ -442,23 +465,23 @@
 
         return (
           <div className="w-full max-w-lg mx-auto flex flex-col items-center gap-6 z-10">
-            <div className="bg-white rounded-[2rem] p-8 shadow-xl border-4 border-brand-100 w-full text-center relative overflow-hidden">
-              <h2 className="text-brand-400 font-bold tracking-widest mb-4 uppercase text-sm">ROUND {round}</h2>
-              {loading ? <div className="h-40 flex items-center justify-center"><IconLoader className="text-brand-400 w-12 h-12" /></div> : 
-              <div className="py-10 bg-brand-50 rounded-3xl border-2 border-brand-100 mb-6 shadow-inner transform transition-all hover:scale-105 duration-300">
-                  <div className="text-7xl font-display text-brand-600 tracking-[0.2em] drop-shadow-md">{initials}</div>
-                  <p className="text-brand-400 text-sm font-bold mt-4 bg-white inline-block px-4 py-1 rounded-full shadow-sm">초성 퀴즈</p>
+            <div className="glass-card rounded-[2rem] p-8 w-full text-center relative overflow-hidden border-2 border-arcade-primary/50 shadow-[0_0_20px_rgba(217,70,239,0.3)]">
+              <h2 className="text-arcade-primary font-bold tracking-widest mb-4 uppercase text-lg text-neon-pink">ROUND {round}</h2>
+              {loading ? <div className="h-40 flex items-center justify-center"><IconLoader className="text-white w-12 h-12" /></div> : 
+              <div className="py-12 bg-black/30 rounded-3xl border border-white/10 mb-6 backdrop-blur-sm">
+                  <div className="text-7xl font-display text-white tracking-[0.2em] drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] animate-neon-flicker">{initials}</div>
+                  <p className="text-gray-400 text-sm font-bold mt-4 uppercase tracking-wider">Cho-seong Quiz</p>
               </div>}
-              {showExamples && <div className="bg-accent/10 p-4 rounded-xl border-2 border-accent/30 animate-pop mb-6">
-                  <h4 className="text-sm font-bold text-brand-800 mb-3 flex items-center justify-center gap-1"><IconLightbulb /> 정답 예시</h4>
-                  <div className="flex flex-wrap justify-center gap-2">{examples.map((ex, idx) => <span key={idx} className="bg-white text-brand-900 px-3 py-1 rounded-full text-lg font-display shadow-[0_2px_0_0_rgba(0,0,0,0.1)] border border-brand-100">{ex}</span>)}</div>
+              {showExamples && <div className="bg-white/10 p-4 rounded-xl border border-white/20 animate-pop mb-6">
+                  <h4 className="text-sm font-bold text-arcade-accent mb-3 flex items-center justify-center gap-1"><IconLightbulb /> 정답 예시</h4>
+                  <div className="flex flex-wrap justify-center gap-2">{examples.map((ex, idx) => <span key={idx} className="bg-arcade-secondary/80 text-white px-3 py-1 rounded-full text-lg font-display border border-white/20 shadow-lg">{ex}</span>)}</div>
               </div>}
-              <div className="grid gap-3">
+              <div className="grid gap-4">
                   {!showExamples && <Button onClick={() => setShowExamples(true)} variant="secondary" className="w-full" disabled={loading}><IconLightbulb /> 힌트 보기</Button>}
-                  <Button onClick={handleNext} variant="success" className="w-full" disabled={loading}>다음 문제 <IconArrowRight /></Button>
+                  <Button onClick={handleNext} variant="primary" className="w-full" disabled={loading}>다음 문제 <IconArrowRight /></Button>
               </div>
             </div>
-            <Button onClick={() => onGameOver({score: 0})} variant="secondary" size="sm" className="mt-2 text-brand-400 border-none shadow-none bg-transparent hover:bg-brand-50">그만하기</Button>
+            <button onClick={() => onGameOver({score: 0})} className="mt-2 text-gray-500 hover:text-white underline text-sm">그만하기</button>
           </div>
         );
       };
@@ -486,24 +509,24 @@
 
         return (
           <div className="w-full max-w-lg mx-auto flex flex-col items-center gap-6 z-10">
-            <div className="bg-white rounded-[2rem] p-8 shadow-xl border-4 border-brand-100 w-full text-center relative">
-              <h2 className="text-brand-400 font-bold tracking-widest mb-4 uppercase text-sm">ROUND {round}</h2>
-              {loading ? <div className="h-40 flex items-center justify-center"><IconLoader className="text-brand-400 w-12 h-12" /></div> : 
-              <div className="py-10 bg-brand-50 rounded-3xl border-2 border-brand-100 mb-6 shadow-inner transform transition-all hover:scale-105 duration-300">
-                  <div className="flex justify-center mb-4"><div className="bg-white p-3 rounded-2xl shadow-sm text-brand-500"><IconGrid /></div></div>
-                  <div className="text-5xl font-display text-brand-700 mb-2 drop-shadow-sm">{category}</div>
-                  <p className="text-brand-400 text-sm font-bold bg-white inline-block px-4 py-1 rounded-full shadow-sm">주제어</p>
+            <div className="glass-card rounded-[2rem] p-8 w-full text-center relative overflow-hidden border-2 border-arcade-secondary/50 shadow-[0_0_20px_rgba(139,92,246,0.3)]">
+              <h2 className="text-arcade-secondary font-bold tracking-widest mb-4 uppercase text-lg text-neon-blue">ROUND {round}</h2>
+              {loading ? <div className="h-40 flex items-center justify-center"><IconLoader className="text-white w-12 h-12" /></div> : 
+              <div className="py-12 bg-black/30 rounded-3xl border border-white/10 mb-6 backdrop-blur-sm">
+                  <div className="flex justify-center mb-4 text-arcade-secondary"><IconGrid width={40} height={40} /></div>
+                  <div className="text-5xl font-display text-white mb-2 drop-shadow-md">{category}</div>
+                  <p className="text-gray-400 text-sm font-bold uppercase tracking-wider">Category</p>
               </div>}
-              {showExamples && <div className="bg-accent/10 p-4 rounded-xl border-2 border-accent/30 animate-pop mb-6">
-                  <h4 className="text-sm font-bold text-brand-800 mb-3 flex items-center justify-center gap-1"><IconLightbulb /> 추천 단어</h4>
-                  <div className="flex flex-wrap justify-center gap-2">{examples.map((ex, idx) => <span key={idx} className="bg-white text-brand-900 px-3 py-1 rounded-full text-lg font-display shadow-[0_2px_0_0_rgba(0,0,0,0.1)] border border-brand-100">{ex}</span>)}</div>
+              {showExamples && <div className="bg-white/10 p-4 rounded-xl border border-white/20 animate-pop mb-6">
+                  <h4 className="text-sm font-bold text-arcade-accent mb-3 flex items-center justify-center gap-1"><IconLightbulb /> 추천 단어</h4>
+                  <div className="flex flex-wrap justify-center gap-2">{examples.map((ex, idx) => <span key={idx} className="bg-arcade-secondary/80 text-white px-3 py-1 rounded-full text-lg font-display border border-white/20 shadow-lg">{ex}</span>)}</div>
               </div>}
-              <div className="grid gap-3">
+              <div className="grid gap-4">
                   {!showExamples && <Button onClick={() => setShowExamples(true)} variant="secondary" className="w-full" disabled={loading}><IconLightbulb /> 힌트 보기</Button>}
-                  <Button onClick={handleNext} variant="success" className="w-full" disabled={loading}>다음 문제 <IconArrowRight /></Button>
+                  <Button onClick={handleNext} variant="primary" className="w-full" disabled={loading}>다음 문제 <IconArrowRight /></Button>
               </div>
             </div>
-            <Button onClick={() => onGameOver({score: 0})} variant="secondary" size="sm" className="mt-2 text-brand-400 border-none shadow-none bg-transparent hover:bg-brand-50">그만하기</Button>
+            <button onClick={() => onGameOver({score: 0})} className="mt-2 text-gray-500 hover:text-white underline text-sm">그만하기</button>
           </div>
         );
       };
@@ -546,25 +569,25 @@
         const handlePass = () => { if (!gameActive) return; nextCard(); };
         const nextCard = () => { if (currentIndex < words.length - 1) setCurrentIndex(p => p + 1); else setCurrentIndex(0); };
 
-        if (loading) return <div className="flex flex-col items-center justify-center h-64 text-brand-800"><IconLoader className="animate-spin w-12 h-12" /><p className="font-display text-xl animate-pulse text-brand-500 mt-4">준비중...</p></div>;
+        if (loading) return <div className="flex flex-col items-center justify-center h-64 text-white"><IconLoader className="animate-spin w-12 h-12" /><p className="font-display text-xl animate-pulse mt-4">READY...</p></div>;
         const currentWord = words[currentIndex] || {text: '...', hint: '...'};
 
         return (
           <div className="w-full max-w-lg mx-auto flex flex-col items-center gap-6 z-10">
-            <div className="flex items-center gap-2 bg-brand-600 text-white px-6 py-2 rounded-full font-bold text-xl shadow-[0_4px_0_0_rgba(0,0,0,0.2)] border-2 border-brand-700 transform -rotate-1">
-               <IconTimer className={`w-6 h-6 ${timeLeft < 10 ? 'animate-pulse text-accent' : ''}`} /><span>{timeLeft}초</span>
+            <div className="flex items-center gap-2 bg-arcade-card px-6 py-2 rounded-full font-bold text-xl border-2 border-arcade-accent text-arcade-accent shadow-[0_0_15px_rgba(250,204,21,0.4)]">
+               <IconTimer className={`w-6 h-6 ${timeLeft < 10 ? 'animate-pulse text-red-500' : ''}`} /><span>{timeLeft}s</span>
             </div>
-            <div className="w-full bg-white rounded-[2.5rem] p-8 shadow-xl border-4 border-brand-100 text-center relative overflow-hidden flex flex-col items-center min-h-[320px] justify-center">
-               <div className="absolute top-0 left-0 w-full h-2 bg-brand-100"></div>
-               <div className="py-6 w-full my-2">
-                  <div className="text-7xl font-display text-brand-900 mb-6 drop-shadow-md animate-pop key={currentWord.text}">{currentWord.text}</div>
-                  <div className="text-brand-500 font-bold text-xl bg-brand-50 border border-brand-100 inline-block px-6 py-2 rounded-full shadow-sm">{currentWord.hint}</div>
+            <div className="glass-card rounded-[2.5rem] p-8 w-full text-center relative overflow-hidden border-2 border-arcade-accent/50 shadow-[0_0_30px_rgba(250,204,21,0.2)]">
+               <div className="absolute top-0 left-0 w-full h-1 bg-arcade-accent shadow-[0_0_10px_#facc15]"></div>
+               <div className="py-8 w-full my-2">
+                  <div className="text-7xl font-display text-white mb-6 drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)] animate-pop key={currentWord.text}">{currentWord.text}</div>
+                  <div className="text-arcade-bg font-bold text-xl bg-arcade-accent inline-block px-6 py-2 rounded-full shadow-lg">{currentWord.hint}</div>
                </div>
-               <p className="text-brand-300 text-xs mt-4 font-bold uppercase tracking-widest">Speed Quiz</p>
+               <p className="text-gray-400 text-xs mt-4 font-bold uppercase tracking-widest">SPEED MODE</p>
             </div>
             <div className="grid grid-cols-2 gap-4 w-full px-2">
-               <button onClick={handlePass} className="h-20 rounded-2xl border-4 border-brand-200 bg-white text-brand-300 font-display text-2xl hover:bg-brand-50 active:scale-95 transition-all flex flex-col items-center justify-center gap-1"><IconX /><span>패스</span></button>
-               <button onClick={handleNextWord} className="h-20 rounded-2xl bg-accent border-b-4 border-accent-shadow text-brand-900 font-display text-3xl hover:bg-accent-hover active:border-b-0 active:translate-y-1 transition-all flex flex-col items-center justify-center gap-1 shadow-lg"><IconArrowRight /><span>정답!</span></button>
+               <button onClick={handlePass} className="h-20 rounded-2xl border-2 border-white/20 bg-white/5 text-gray-400 font-display text-2xl hover:bg-white/10 active:scale-95 transition-all flex flex-col items-center justify-center gap-1"><IconX /><span>PASS</span></button>
+               <button onClick={handleNextWord} className="h-20 rounded-2xl bg-arcade-success border-b-4 border-green-800 text-green-900 font-display text-3xl hover:bg-green-400 active:border-b-0 active:translate-y-1 transition-all flex flex-col items-center justify-center gap-1 shadow-lg"><IconArrowRight /><span>NEXT</span></button>
             </div>
           </div>
         );
@@ -579,16 +602,19 @@
         const resetToMenu = () => { setCurrentGame('NONE'); setLastStats(null); };
 
         return (
-          <div className="min-h-screen font-sans text-gray-800 flex flex-col selection:bg-brand-200 relative">
-            <FloatingBackground />
+          <div className="min-h-screen font-sans flex flex-col relative">
+            <div className="perspective-grid"></div>
+            <FloatingElements />
+            <div className="scanlines"></div>
+            <div className="vignette"></div>
             
-            <header className="bg-white/80 backdrop-blur-md sticky top-0 z-20 border-b border-brand-100 shadow-sm">
+            <header className="sticky top-0 z-40 border-b border-white/10 bg-arcade-bg/80 backdrop-blur-md">
               <div className="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
                 <div className="flex items-center gap-3 cursor-pointer group" onClick={resetToMenu}>
-                  <div className="bg-brand-500 text-white p-2 rounded-xl shadow-[0_3px_0_0_rgba(0,0,0,0.2)] group-hover:scale-110 transition-transform"><IconCookie /></div>
-                  <h1 className="text-xl md:text-2xl font-display text-brand-900 tracking-tight mt-1 text-outline-light">한글과자 아케이드</h1>
+                  <div className="bg-arcade-primary text-white p-2 rounded-xl shadow-[0_0_10px_#d946ef] group-hover:scale-110 transition-transform"><IconCookie /></div>
+                  <h1 className="text-xl md:text-2xl font-display text-white tracking-tight mt-1 text-neon-pink">한글과자 아케이드</h1>
                 </div>
-                {currentGame !== 'NONE' && <button onClick={resetToMenu} className="text-brand-400 hover:text-brand-600 transition-colors p-2 bg-brand-50 rounded-xl hover:bg-brand-100"><IconArrowLeft /></button>}
+                {currentGame !== 'NONE' && <button onClick={resetToMenu} className="text-gray-400 hover:text-white transition-colors p-2 bg-white/5 rounded-xl hover:bg-white/10"><IconArrowLeft /></button>}
               </div>
             </header>
 
@@ -597,38 +623,37 @@
                 <div className="w-full flex flex-col gap-8 animate-pop py-4">
                   <section className="text-center space-y-6 mb-8 mt-4">
                      <div className="inline-block relative">
-                        <h2 className="text-5xl md:text-6xl font-display text-white text-outline drop-shadow-xl leading-tight relative z-10">
-                           <span className="text-accent text-outline">AI</span>와 함께하는<br/>한글 과자 놀이
+                        <h2 className="text-5xl md:text-6xl font-display text-white drop-shadow-[0_5px_0_#4c1d95] leading-tight relative z-10">
+                           <span className="text-arcade-accent text-neon-yellow">AI</span>와 함께하는<br/>한글 과자 놀이
                         </h2>
-                        <div className="absolute -top-10 -right-10 animate-float-delayed"><IconCookie className="text-brand-200 w-20 h-20 opacity-50" /></div>
                      </div>
-                     <p className="text-brand-800/60 text-xl font-medium bg-white/50 backdrop-blur-sm inline-block px-6 py-2 rounded-full">
+                     <p className="text-gray-300 text-xl font-medium bg-black/40 backdrop-blur-sm inline-block px-6 py-2 rounded-full border border-white/10">
                         오늘의 간식은 어떤 단어인가요? 🍪
                      </p>
                   </section>
                   <div className="grid md:grid-cols-3 gap-6">
-                    <button onClick={() => startGame('INITIAL')} className="group relative bg-white hover:bg-brand-50 p-8 rounded-[2.5rem] transition-all duration-300 border-b-8 border-brand-200 hover:border-brand-300 hover:-translate-y-1 active:border-b-0 active:translate-y-2 text-left overflow-hidden shadow-lg h-72 flex flex-col justify-between">
-                       <div className="absolute -top-6 -right-6 text-brand-100 group-hover:scale-110 transition-transform duration-500 rotate-12"><IconAlign width={140} height={140} /></div>
-                       <div className="bg-brand-100 w-16 h-16 rounded-2xl flex items-center justify-center text-brand-600 shadow-inner mb-4"><IconAlign width={32} height={32} /></div>
+                    <button onClick={() => startGame('INITIAL')} className="group relative glass-card p-8 rounded-[2rem] transition-all duration-300 hover:bg-arcade-primary/20 hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(217,70,239,0.4)] text-left overflow-hidden h-72 flex flex-col justify-between border-t border-l border-white/20">
+                       <div className="absolute -top-6 -right-6 text-arcade-primary/20 group-hover:scale-110 transition-transform duration-500 rotate-12"><IconAlign width={140} height={140} /></div>
+                       <div className="bg-arcade-primary/20 w-16 h-16 rounded-2xl flex items-center justify-center text-arcade-primary shadow-inner mb-4 border border-arcade-primary/30"><IconAlign width={32} height={32} /></div>
                        <div className="relative z-10">
-                          <h3 className="text-3xl font-display text-brand-900 mb-2">초성 게임</h3>
-                          <p className="text-brand-400 font-medium text-sm leading-snug">제시된 자음을 보고<br/>단어를 맞춰보세요.</p>
+                          <h3 className="text-3xl font-display text-white mb-2 text-neon-pink">초성 게임</h3>
+                          <p className="text-gray-400 font-medium text-sm leading-snug group-hover:text-white">제시된 자음을 보고<br/>단어를 맞춰보세요.</p>
                        </div>
                     </button>
-                    <button onClick={() => startGame('CATEGORY')} className="group relative bg-white hover:bg-brand-50 p-8 rounded-[2.5rem] transition-all duration-300 border-b-8 border-brand-200 hover:border-brand-300 hover:-translate-y-1 active:border-b-0 active:translate-y-2 text-left overflow-hidden shadow-lg h-72 flex flex-col justify-between">
-                       <div className="absolute -top-6 -right-6 text-violet-100 group-hover:scale-110 transition-transform duration-500 -rotate-12"><IconGrid width={140} height={140} /></div>
-                       <div className="bg-violet-100 w-16 h-16 rounded-2xl flex items-center justify-center text-violet-600 shadow-inner mb-4"><IconGrid width={32} height={32} /></div>
+                    <button onClick={() => startGame('CATEGORY')} className="group relative glass-card p-8 rounded-[2rem] transition-all duration-300 hover:bg-arcade-secondary/20 hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(139,92,246,0.4)] text-left overflow-hidden h-72 flex flex-col justify-between border-t border-l border-white/20">
+                       <div className="absolute -top-6 -right-6 text-arcade-secondary/20 group-hover:scale-110 transition-transform duration-500 -rotate-12"><IconGrid width={140} height={140} /></div>
+                       <div className="bg-arcade-secondary/20 w-16 h-16 rounded-2xl flex items-center justify-center text-arcade-secondary shadow-inner mb-4 border border-arcade-secondary/30"><IconGrid width={32} height={32} /></div>
                        <div className="relative z-10">
-                          <h3 className="text-3xl font-display text-violet-900 mb-2">카테고리</h3>
-                          <p className="text-violet-400 font-medium text-sm leading-snug">주제에 딱 맞는<br/>단어를 찾아보세요.</p>
+                          <h3 className="text-3xl font-display text-white mb-2 text-neon-blue">카테고리</h3>
+                          <p className="text-gray-400 font-medium text-sm leading-snug group-hover:text-white">주제에 딱 맞는<br/>단어를 찾아보세요.</p>
                        </div>
                     </button>
-                    <button onClick={() => startGame('SPEED')} className="group relative bg-white hover:bg-brand-50 p-8 rounded-[2.5rem] transition-all duration-300 border-b-8 border-brand-200 hover:border-brand-300 hover:-translate-y-1 active:border-b-0 active:translate-y-2 text-left overflow-hidden shadow-lg h-72 flex flex-col justify-between">
-                       <div className="absolute -top-6 -right-6 text-accent/20 group-hover:scale-110 transition-transform duration-500 rotate-6"><IconZap width={140} height={140} /></div>
-                       <div className="bg-yellow-100 w-16 h-16 rounded-2xl flex items-center justify-center text-yellow-600 shadow-inner mb-4"><IconZap width={32} height={32} /></div>
+                    <button onClick={() => startGame('SPEED')} className="group relative glass-card p-8 rounded-[2rem] transition-all duration-300 hover:bg-arcade-accent/20 hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(250,204,21,0.4)] text-left overflow-hidden h-72 flex flex-col justify-between border-t border-l border-white/20">
+                       <div className="absolute -top-6 -right-6 text-arcade-accent/20 group-hover:scale-110 transition-transform duration-500 rotate-6"><IconZap width={140} height={140} /></div>
+                       <div className="bg-arcade-accent/20 w-16 h-16 rounded-2xl flex items-center justify-center text-arcade-accent shadow-inner mb-4 border border-arcade-accent/30"><IconZap width={32} height={32} /></div>
                        <div className="relative z-10">
-                          <h3 className="text-3xl font-display text-brand-900 mb-2">단어 짓기</h3>
-                          <p className="text-brand-400 font-medium text-sm leading-snug">누구보다 빠르게!<br/>순발력 테스트.</p>
+                          <h3 className="text-3xl font-display text-white mb-2 text-neon-yellow">단어 짓기</h3>
+                          <p className="text-gray-400 font-medium text-sm leading-snug group-hover:text-white">누구보다 빠르게!<br/>순발력 테스트.</p>
                        </div>
                     </button>
                   </div>
@@ -636,19 +661,18 @@
               ) : (
                 <div className="w-full flex flex-col items-center">
                    {lastStats ? (
-                      <div className="max-w-md w-full bg-white rounded-[2.5rem] shadow-2xl p-8 text-center animate-pop border-b-8 border-brand-200 relative mt-10 z-20">
-                          <Confetti />
+                      <div className="max-w-md w-full glass-card rounded-[2.5rem] shadow-2xl p-8 text-center animate-pop border-2 border-arcade-accent relative mt-10 z-20">
                           <div className="absolute -top-12 left-1/2 transform -translate-x-1/2">
-                               <div className="w-24 h-24 bg-accent rounded-full flex items-center justify-center border-4 border-white shadow-lg text-brand-900 animate-bounce-slight"><IconTrophy width={48} height={48} /></div>
+                               <div className="w-24 h-24 bg-arcade-accent rounded-full flex items-center justify-center border-4 border-arcade-bg shadow-[0_0_20px_#facc15] text-arcade-bg animate-bounce-slight"><IconTrophy width={48} height={48} /></div>
                           </div>
-                          <h2 className="text-4xl font-display text-brand-900 mb-2 mt-10 text-outline-light">게임 종료!</h2>
+                          <h2 className="text-4xl font-display text-white mb-2 mt-10 text-neon-yellow">게임 종료!</h2>
                           <div className="py-6">
-                             <span className="text-6xl font-display text-accent text-outline">{lastStats.score || 0}</span>
+                             <span className="text-7xl font-display text-arcade-accent text-outline drop-shadow-lg">{lastStats.score || 0}</span>
                              <span className="text-gray-400 font-bold ml-2">점</span>
                           </div>
-                          <p className="text-gray-400 font-medium mb-8">참 잘했어요! 🍪</p>
+                          <p className="text-gray-300 font-medium mb-8">참 잘했어요! 🍪</p>
                           <div className="space-y-4">
-                              <Button onClick={() => startGame(currentGame)} variant="success" size="lg" className="w-full shadow-xl">다시 하기</Button>
+                              <Button onClick={() => startGame(currentGame)} variant="success" size="lg" className="w-full shadow-[0_0_15px_rgba(74,222,128,0.5)]">다시 하기</Button>
                               <Button onClick={resetToMenu} variant="secondary" className="w-full">메뉴로 나가기</Button>
                           </div>
                       </div>
@@ -662,7 +686,7 @@
                 </div>
               )}
             </main>
-            <footer className="py-8 text-center text-brand-900/30 text-sm font-display relative z-10"><p>Hangul Cookie Arcade Remake</p></footer>
+            <footer className="py-8 text-center text-white/20 text-xs font-display relative z-10"><p>Hangul Cookie Arcade Remake</p></footer>
           </div>
         );
       };
