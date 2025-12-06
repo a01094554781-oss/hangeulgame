@@ -1,0 +1,5 @@
+{
+  "name": "Hangul Cookie Arcade",
+  "description": "Remake of Hangul Kwaja games with AI. Features Initial Quiz, Category Quiz, and Speed Word Building.",
+  "requestFramePermissions": []
+}
