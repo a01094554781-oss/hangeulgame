@@ -110,170 +110,195 @@
       const IconTimer = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" {...props}><line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/></svg>;
       const IconX = (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M18 6 6 18"/><path d="m6 6 18 18"/></svg>;
 
-      // --- DATA (Hardcoded to ensure it loads) ---
+      // --- DATA (MASSIVE EXPANSION) ---
       const INITIAL_DATA = [
-        { initial: "ㄱ ㅅ", examples: ["감사", "구슬", "고수", "가슴", "기술", "기숙", "개선", "공사", "기사", "간식"] },
-        { initial: "ㅇ ㅈ", examples: ["의자", "우주", "아주", "여자", "연주", "인정", "유저", "옷장", "운전", "이전"] },
-        { initial: "ㅎ ㄱ", examples: ["한글", "학교", "한강", "휴가", "항공", "해골", "환경", "현관", "향기", "후기"] },
-        { initial: "ㅂ ㄴ", examples: ["비누", "배낭", "바늘", "보노", "분노", "본능", "밤눈", "배달", "비닐", "반납"] },
-        { initial: "ㅅ ㄱ", examples: ["사과", "수건", "시간", "시계", "소금", "성공", "수고", "사기", "수강", "세계"] },
-        { initial: "ㅁ ㅈ", examples: ["모자", "문자", "먼지", "맥주", "문제", "명절", "마중", "무지", "매주", "목주"] },
-        { initial: "ㄱ ㅈ", examples: ["가족", "과자", "공장", "감자", "계절", "간장", "거울", "가지", "기적", "고장"] },
-        { initial: "ㅇ ㄹ", examples: ["우리", "요리", "여름", "어른", "이름", "오리", "연락", "유리", "아래", "의뢰"] },
-        { initial: "ㅈ ㄷ", examples: ["지도", "정답", "전등", "장독", "중독", "자동", "작동", "지대", "제도", "절대"] },
-        { initial: "ㅂ ㅈ", examples: ["바지", "반지", "부자", "배추", "박자", "반장", "봉지", "부정", "보장", "병정"] },
-        { initial: "ㅅ ㅁ", examples: ["사막", "선물", "수면", "설명", "식물", "소망", "신문", "소문", "승마", "실내"] },
-        { initial: "ㅎ ㄴ", examples: ["하늘", "흉내", "훈남", "호남", "하녀", "학년", "효녀", "후년", "한눈", "희망"] },
-        { initial: "ㄷ ㄹ", examples: ["다리", "도로", "달력", "대륙", "도루", "달리기", "동료", "대리", "둘리", "단락"] },
-        { initial: "ㄱ ㅁ", examples: ["거미", "구멍", "고무", "가망", "고민", "국물", "가면", "경마", "골목", "교문"] },
-        { initial: "ㅇ ㄱ", examples: ["야구", "연기", "악기", "안경", "입구", "얼굴", "아기", "일기", "인구", "인기"] },
-        { initial: "ㅈ ㄱ", examples: ["지구", "장구", "전기", "저녁", "자국", "조각", "작가", "전공", "주기", "장갑"] },
-        { initial: "ㅊ ㄱ", examples: ["축구", "친구", "천국", "출구", "초기", "총기", "추구", "최고", "철구", "창고"] },
-        { initial: "ㅍ ㄷ", examples: ["포도", "파동", "폭동", "파도", "판돈", "필독", "평등", "풀독", "포대", "폭도"] },
-        { initial: "ㅋ ㅍ", examples: ["커피", "쿠폰", "카피", "캠프", "키퍼", "큰폭", "코피", "쿵푸", "컴퓨터"] },
-        { initial: "ㄴ ㅁ", examples: ["나무", "나머지", "남매", "눈물", "농민", "낭만", "내무", "너머", "노모", "논문"] },
-        { initial: "ㄷ ㅈ", examples: ["돼지", "동전", "된장", "도장", "단장", "도전", "대장", "단지", "동장", "동점"] },
-        { initial: "ㄹ ㄷ", examples: ["라디오", "랜턴", "리듬", "롯데", "레드", "리더", "런던", "로동", "레이다", "리들"] },
-        { initial: "ㅁ ㄱ", examples: ["미국", "몽골", "물감", "모기", "무기", "만개", "미각", "무게", "망고", "목구멍"] },
-        { initial: "ㅂ ㅎ", examples: ["비행기", "방학", "번호", "병원", "백화점", "보호", "변화", "부활", "배회", "반항"] },
-        { initial: "ㅇ ㅇ", examples: ["우유", "오이", "여우", "아이", "이유", "언어", "운영", "인형", "여행", "예약"] },
-        { initial: "ㄱ ㄱ", examples: ["고기", "건강", "감기", "경기", "국기", "광고", "구경", "가곡", "공구", "기간"] },
-        { initial: "ㄴ ㄴ", examples: ["누나", "나나", "남녀", "내년", "나눔", "노노", "낙농", "녹내장", "남남"] },
-        { initial: "ㄷ ㄷ", examples: ["도둑", "당당", "대답", "단독", "도달", "대두", "담당", "동동", "두통"] },
-        { initial: "ㅂ ㅂ", examples: ["부부", "방법", "바보", "비빔", "반복", "부분", "발발", "보보", "배배"] },
-        { initial: "ㅅ ㅅ", examples: ["사슴", "사실", "생선", "소설", "수술", "세상", "상상", "실수", "식사", "순서"] },
-        { initial: "ㅈ ㅈ", examples: ["자주", "직장", "전쟁", "지진", "제주", "주전자", "전자", "조직", "저장", "재정"] },
-        { initial: "ㅊ ㅊ", examples: ["추천", "최초", "친척", "청춘", "침체", "출처", "차창", "척추", "천체"] },
-        { initial: "ㅎ ㅎ", examples: ["하하", "호호", "후회", "화해", "흔한", "현황", "황혼", "협회", "항해", "흑백"] },
-        { initial: "ㅁ ㅁ", examples: ["문명", "미모", "마마", "무명", "매매", "목명", "문맥", "마무리", "모모"] },
-        { initial: "ㅍ ㄹ", examples: ["파란", "포로", "피로", "폭력", "편리", "풍력", "파리", "피리", "표류", "펄럭"] },
-        { initial: "ㅌ ㄲ", examples: ["토끼", "터키", "티켓", "태권", "특권", "토큰", "통쾌"] },
-        { initial: "ㅁ ㄹ", examples: ["머리", "모래", "미래", "물리", "무리", "마루", "무릎", "몰래", "밀랍", "명령"] },
-        { initial: "ㅂ ㄷ", examples: ["바다", "배달", "반대", "바닥", "복도", "부대", "빈대", "본당", "부도", "비대"] },
-        { initial: "ㅅ ㅇ", examples: ["수영", "시월", "수업", "상어", "사업", "사용", "석유", "신용", "소음", "승인"] },
-        { initial: "ㅎ ㅈ", examples: ["휴지", "화장", "회장", "현재", "형제", "혼자", "행정", "흔적", "협조", "화재"] },
-        { initial: "ㅈ ㅅ", examples: ["주소", "점심", "자신", "장소", "조심", "전설", "정성", "재산", "죄송", "짐승"] },
-        { initial: "ㅊ ㅋ", examples: ["치킨", "체크", "차키", "초코", "축카", "체키"] },
-        { initial: "ㄱ ㅊ", examples: ["김치", "기차", "경찰", "고추", "건축", "가출", "관찰", "교체", "근처", "기초"] },
-        { initial: "ㄴ ㅈ", examples: ["남자", "낮잠", "내장", "농장", "냉장고", "나중", "낙조", "난장"] },
-        { initial: "ㄷ ㅎ", examples: ["대학", "대화", "도형", "대회", "동화", "단합", "다행", "독해", "당황"] }
+        { initial: "ㄱ ㅅ", examples: ["감사", "구슬", "고수", "가슴", "기술", "기숙", "개선", "공사", "기사", "간식", "가설", "결석", "교실", "거실", "기습"] },
+        { initial: "ㅇ ㅈ", examples: ["의자", "우주", "아주", "여자", "연주", "인정", "유저", "옷장", "운전", "이전", "완전", "역전", "연장", "입장", "오징어"] },
+        { initial: "ㅎ ㄱ", examples: ["한글", "학교", "한강", "휴가", "항공", "해골", "환경", "현관", "향기", "후기", "휴강", "해결", "합격", "현금", "효과"] },
+        { initial: "ㅂ ㄴ", examples: ["비누", "배낭", "바늘", "보노", "분노", "본능", "밤눈", "배달", "비닐", "반납", "봄날", "배너", "분납", "발냄새", "바구니"] },
+        { initial: "ㅅ ㄱ", examples: ["사과", "수건", "시간", "시계", "소금", "성공", "수고", "사기", "수강", "세계", "생각", "수구", "사고", "순금", "서랍"] },
+        { initial: "ㅁ ㅈ", examples: ["모자", "문자", "먼지", "맥주", "문제", "명절", "마중", "무지", "매주", "목주", "물주", "면적", "목적", "민족", "명작"] },
+        { initial: "ㄱ ㅈ", examples: ["가족", "과자", "공장", "감자", "계절", "간장", "거울", "가지", "기적", "고장", "극장", "건조", "강자", "경주", "군주"] },
+        { initial: "ㅇ ㄹ", examples: ["우리", "요리", "여름", "어른", "이름", "오리", "연락", "유리", "아래", "의뢰", "오류", "음료", "유래", "인력", "압력"] },
+        { initial: "ㅈ ㄷ", examples: ["지도", "정답", "전등", "장독", "중독", "자동", "작동", "지대", "제도", "절대", "잔디", "전달", "진동", "중대", "지대"] },
+        { initial: "ㅂ ㅈ", examples: ["바지", "반지", "부자", "배추", "박자", "반장", "봉지", "부정", "보장", "병정", "본질", "변주", "백지", "복제", "비자"] },
+        { initial: "ㅅ ㅁ", examples: ["사막", "선물", "수면", "설명", "식물", "소망", "신문", "소문", "승마", "실내", "서명", "수명", "산맥", "사면", "세무"] },
+        { initial: "ㅎ ㄴ", examples: ["하늘", "흉내", "훈남", "호남", "하녀", "학년", "효녀", "후년", "한눈", "희망", "형님", "훈녀", "흔남", "휘날리다", "하늬바람"] },
+        { initial: "ㄷ ㄹ", examples: ["다리", "도로", "달력", "대륙", "도루", "달리기", "동료", "대리", "둘리", "단락", "독립", "등록", "달러", "도료", "동력"] },
+        { initial: "ㄱ ㅁ", examples: ["거미", "구멍", "고무", "가망", "고민", "국물", "가면", "경마", "골목", "교문", "구름", "기말", "가뭄", "고모", "국민"] },
+        { initial: "ㅇ ㄱ", examples: ["야구", "연기", "악기", "안경", "입구", "얼굴", "아기", "일기", "인구", "인기", "안개", "여권", "요구", "연구", "입금"] },
+        { initial: "ㅈ ㄱ", examples: ["지구", "장구", "전기", "저녁", "자국", "조각", "작가", "전공", "주기", "장갑", "조국", "자극", "제거", "증거", "종교"] },
+        { initial: "ㅊ ㄱ", examples: ["축구", "친구", "천국", "출구", "초기", "총기", "추구", "최고", "철구", "창고", "청국장", "충격", "추가", "참기름", "출국"] },
+        { initial: "ㅍ ㄷ", examples: ["포도", "파동", "폭동", "파도", "판돈", "필독", "평등", "풀독", "포대", "폭도", "푸딩", "파닭", "팔도", "팬덤", "포대기"] },
+        { initial: "ㅋ ㅍ", examples: ["커피", "쿠폰", "카피", "캠프", "키퍼", "큰폭", "코피", "쿵푸", "컴퓨터", "키패드", "카페", "쿠파", "콤프", "케첩", "카펫"] },
+        { initial: "ㄴ ㅁ", examples: ["나무", "나머지", "남매", "눈물", "농민", "낭만", "내무", "너머", "노모", "논문", "내막", "낙마", "눈멀다", "남미", "녹물"] },
+        { initial: "ㄷ ㅈ", examples: ["돼지", "동전", "된장", "도장", "단장", "도전", "대장", "단지", "동장", "동점", "답장", "도적", "대전", "독점", "대조"] },
+        { initial: "ㄹ ㄷ", examples: ["라디오", "랜턴", "리듬", "롯데", "레드", "리더", "런던", "로동", "레이다", "리들", "랜딩", "롤딩", "리딩", "로드", "루동"] },
+        { initial: "ㅁ ㄱ", examples: ["미국", "몽골", "물감", "모기", "무기", "만개", "미각", "무게", "망고", "목구멍", "물고기", "문구", "마감", "미궁", "목공"] },
+        { initial: "ㅂ ㅎ", examples: ["비행기", "방학", "번호", "병원", "백화점", "보호", "변화", "부활", "배회", "반항", "부호", "비호", "박하", "방해", "발휘"] },
+        { initial: "ㅇ ㅇ", examples: ["우유", "오이", "여우", "아이", "이유", "언어", "운영", "인형", "여행", "예약", "영웅", "얼음", "용용", "연어", "양말"] },
+        { initial: "ㄱ ㄱ", examples: ["고기", "건강", "감기", "경기", "국기", "광고", "구경", "가곡", "공구", "기간", "개그", "계곡", "고구마", "국가", "관객"] },
+        { initial: "ㄴ ㄴ", examples: ["누나", "나나", "남녀", "내년", "나눔", "노노", "낙농", "녹내장", "남남", "나비넥타이", "남녀노소", "넉넉", "낙낙", "냠냠", "눈눈"] },
+        { initial: "ㄷ ㄷ", examples: ["도둑", "당당", "대답", "단독", "도달", "대두", "담당", "동동", "두통", "단단", "대대", "도도", "두두", "디딤돌", "도담도담"] },
+        { initial: "ㅂ ㅂ", examples: ["부부", "방법", "바보", "비빔", "반복", "부분", "발발", "보보", "배배", "보배", "비비", "방방", "북북", "밥밥", "부비부비"] },
+        { initial: "ㅅ ㅅ", examples: ["사슴", "사실", "생선", "소설", "수술", "세상", "상상", "실수", "식사", "순서", "선수", "사설", "신세", "수수", "소속"] },
+        { initial: "ㅈ ㅈ", examples: ["자주", "직장", "전쟁", "지진", "제주", "주전자", "전자", "조직", "저장", "재정", "주주", "정전", "진주", "집중", "조조"] },
+        { initial: "ㅊ ㅊ", examples: ["추천", "최초", "친척", "청춘", "침체", "출처", "차창", "척추", "천체", "칭찬", "추측", "채찍", "철창", "청초", "차차"] },
+        { initial: "ㅎ ㅎ", examples: ["하하", "호호", "후회", "화해", "흔한", "현황", "황혼", "협회", "항해", "흑백", "활동", "화환", "형형색색", "호황", "허허"] },
+        { initial: "ㅁ ㅁ", examples: ["문명", "미모", "마마", "무명", "매매", "목명", "문맥", "마무리", "모모", "무무", "미미", "물물교환", "명명", "면면", "무말랭이"] }
       ];
 
       const CATEGORY_DATA = [
-        { category: "과일", examples: ["사과", "포도", "바나나", "수박", "딸기", "복숭아", "참외", "멜론", "귤", "배"] },
-        { category: "동물", examples: ["호랑이", "사자", "토끼", "강아지", "고양이", "코끼리", "기린", "곰", "여우", "늑대"] },
-        { category: "나라", examples: ["한국", "미국", "일본", "중국", "프랑스", "독일", "영국", "이탈리아", "캐나다", "호주"] },
-        { category: "운동", examples: ["축구", "농구", "야구", "수영", "배구", "테니스", "골프", "탁구", "태권도", "배드민턴"] },
-        { category: "색깔", examples: ["빨강", "파랑", "노랑", "초록", "보라", "검정", "하양", "분홍", "주황", "회색"] },
-        { category: "학교", examples: ["연필", "지우개", "칠판", "책상", "선생님", "공책", "가방", "필통", "급식", "교복"] },
-        { category: "음식", examples: ["피자", "치킨", "햄버거", "라면", "김밥", "비빔밥", "떡볶이", "스파게티", "초밥", "만두"] },
-        { category: "직업", examples: ["의사", "선생님", "경찰관", "소방관", "요리사", "가수", "배우", "과학자", "운동선수", "변호사"] },
-        { category: "탈것", examples: ["버스", "택시", "기차", "비행기", "자전거", "오토바이", "지하철", "배", "헬리콥터", "트럭"] },
-        { category: "가전제품", examples: ["냉장고", "세탁기", "청소기", "에어컨", "밥솥", "전자레인지", "텔레비전", "선풍기", "컴퓨터", "드라이기"] },
-        { category: "학용품", examples: ["가위", "풀", "자", "볼펜", "필통", "색연필", "노트", "지우개", "샤프", "크레파스", "물감"] },
-        { category: "악기", examples: ["피아노", "기타", "바이올린", "드럼", "플루트", "하프", "단소", "리코더", "첼로", "트럼펫"] },
-        { category: "날씨", examples: ["맑음", "흐림", "비", "눈", "바람", "태풍", "번개", "안개", "우박", "장마"] },
-        { category: "감정", examples: ["기쁨", "슬픔", "화남", "놀람", "무서움", "행복", "사랑", "우울", "긴장", "부끄러움"] },
-        { category: "신체", examples: ["눈", "코", "입", "귀", "손", "발", "머리", "어깨", "무릎", "배"] },
-        { category: "가구", examples: ["침대", "식탁", "의자", "소파", "책장", "서랍장", "옷장", "화장대", "거울", "책상"] },
-        { category: "야채/채소", examples: ["오이", "당근", "양파", "파", "마늘", "배추", "무", "감자", "고구마", "호박"] },
-        { category: "간식", examples: ["과자", "초콜릿", "사탕", "젤리", "아이스크림", "케이크", "빵", "쿠키", "푸딩", "요거트"] },
-        { category: "꽃", examples: ["장미", "해바라기", "무궁화", "벚꽃", "진달래", "개나리", "튤립", "백합", "국화", "카네이션"] },
-        { category: "장소", examples: ["공원", "학교", "집", "병원", "도서관", "마트", "영화관", "놀이터", "수영장", "박물관"] },
-        { category: "음료", examples: ["물", "우유", "주스", "콜라", "사이다", "커피", "녹차", "홍차", "코코아", "스무디"] },
-        { category: "곤충", examples: ["개미", "나비", "벌", "잠자리", "매미", "무당벌레", "사마귀", "장수풍뎅이", "사슴벌레", "파리"] },
-        { category: "바다생물", examples: ["물고기", "오징어", "문어", "고래", "상어", "조개", "새우", "게", "불가사리", "해파리"] },
-        { category: "부엌용품", examples: ["냄비", "후라이팬", "국자", "도마", "칼", "접시", "그릇", "컵", "숟가락", "젓가락"] },
-        { category: "편의점", examples: ["삼각김밥", "컵라면", "도시락", "샌드위치", "햄버거", "음료수", "과자", "껌", "사탕", "아이스크림"] },
-        { category: "캠핑용품", examples: ["텐트", "침낭", "코펠", "버너", "의자", "테이블", "랜턴", "아이스박스", "돗자리", "망치"] },
-        { category: "영화장르", examples: ["액션", "코미디", "공포", "로맨스", "만화", "애니메이션", "다큐멘터리", "전쟁", "SF", "판타지"] },
-        { category: "보석", examples: ["다이아몬드", "루비", "사파이어", "에메랄드", "진주", "금", "은", "수정", "호박", "옥"] },
-        { category: "우주", examples: ["태양", "지구", "달", "별", "화성", "목성", "토성", "금성", "수성", "천왕성"] },
-        { category: "계절/시간", examples: ["봄", "여름", "가을", "겨울", "아침", "점심", "저녁", "밤", "새벽", "오전"] }
+        { category: "과일", examples: ["사과", "포도", "바나나", "수박", "딸기", "복숭아", "참외", "멜론", "귤", "배", "망고", "키위", "자두", "체리", "파인애플", "블루베리", "석류", "레몬", "감", "대추"] },
+        { category: "동물", examples: ["호랑이", "사자", "토끼", "강아지", "고양이", "코끼리", "기린", "곰", "여우", "늑대", "사슴", "원숭이", "판다", "다람쥐", "햄스터", "얼룩말", "하마", "악어", "독수리", "펭귄"] },
+        { category: "나라", examples: ["한국", "미국", "일본", "중국", "프랑스", "독일", "영국", "이탈리아", "캐나다", "호주", "브라질", "스페인", "러시아", "인도", "베트남", "태국", "멕시코", "스위스", "네덜란드", "터키"] },
+        { category: "운동", examples: ["축구", "농구", "야구", "수영", "배구", "테니스", "골프", "탁구", "태권도", "배드민턴", "스키", "스케이트", "요가", "복싱", "볼링", "양궁", "육상", "유도", "펜싱", "하키"] },
+        { category: "색깔", examples: ["빨강", "파랑", "노랑", "초록", "보라", "검정", "하양", "분홍", "주황", "회색", "갈색", "하늘색", "연두색", "금색", "은색", "남색", "베이지색", "자주색", "청록색", "살구색"] },
+        { category: "학교", examples: ["연필", "지우개", "칠판", "책상", "선생님", "공책", "가방", "필통", "급식", "교복", "체육관", "운동장", "실내화", "숙제", "시험", "교과서", "방학", "졸업", "입학", "소풍"] },
+        { category: "음식", examples: ["피자", "치킨", "햄버거", "라면", "김밥", "비빔밥", "떡볶이", "스파게티", "초밥", "만두", "돈까스", "스테이크", "샐러드", "샌드위치", "국수", "불고기", "갈비찜", "된장찌개", "김치찌개", "카레"] },
+        { category: "직업", examples: ["의사", "선생님", "경찰관", "소방관", "요리사", "가수", "배우", "과학자", "운동선수", "변호사", "간호사", "군인", "디자이너", "프로그래머", "기자", "판사", "작가", "화가", "농부", "운전기사"] },
+        { category: "탈것", examples: ["버스", "택시", "기차", "비행기", "자전거", "오토바이", "지하철", "배", "헬리콥터", "트럭", "소방차", "구급차", "경찰차", "우주선", "킥보드", "유모차", "휠체어", "케이블카", "열기구", "잠수함"] },
+        { category: "가전제품", examples: ["냉장고", "세탁기", "청소기", "에어컨", "밥솥", "전자레인지", "텔레비전", "선풍기", "컴퓨터", "드라이기", "다리미", "오븐", "식기세척기", "가습기", "공기청정기", "토스터기", "믹서기", "제습기", "안마의자", "스피커"] },
+        { category: "학용품", examples: ["가위", "풀", "자", "볼펜", "필통", "색연필", "노트", "지우개", "샤프", "크레파스", "물감", "붓", "스케치북", "화이트", "테이프", "스테이플러", "클립", "압정", "포스트잇", "컴퍼스"] },
+        { category: "악기", examples: ["피아노", "기타", "바이올린", "드럼", "플루트", "하프", "단소", "리코더", "첼로", "트럼펫", "색소폰", "우쿨렐레", "실로폰", "탬버린", "캐스터네츠", "오르간", "가야금", "해금", "장구", "북"] },
+        { category: "날씨", examples: ["맑음", "흐림", "비", "눈", "바람", "태풍", "번개", "안개", "우박", "장마", "폭염", "한파", "소나기", "무지개", "구름", "황사", "미세먼지", "서리", "이슬", "가뭄"] },
+        { category: "감정", examples: ["기쁨", "슬픔", "화남", "놀람", "무서움", "행복", "사랑", "우울", "긴장", "부끄러움", "짜증", "신남", "심심함", "답답함", "즐거움", "편안함", "지루함", "외로움", "그리움", "고마움"] },
+        { category: "신체", examples: ["눈", "코", "입", "귀", "손", "발", "머리", "어깨", "무릎", "배", "등", "엉덩이", "손가락", "발가락", "목", "허리", "팔꿈치", "발목", "손목", "이마"] },
+        { category: "가구", examples: ["침대", "식탁", "의자", "소파", "책장", "서랍장", "옷장", "화장대", "거울", "책상", "신발장", "수납장", "협탁", "조명", "커튼", "카펫", "쿠션", "매트리스", "선반", "행거"] },
+        { category: "야채/채소", examples: ["오이", "당근", "양파", "파", "마늘", "배추", "무", "감자", "고구마", "호박", "고추", "상추", "깻잎", "브로콜리", "토마토", "가지", "시금치", "콩나물", "버섯", "피망"] },
+        { category: "간식", examples: ["과자", "초콜릿", "사탕", "젤리", "아이스크림", "케이크", "빵", "쿠키", "푸딩", "요거트", "떡", "와플", "마카롱", "도넛", "팝콘", "호떡", "붕어빵", "츄러스", "약과", "껌"] },
+        { category: "꽃", examples: ["장미", "해바라기", "무궁화", "벚꽃", "진달래", "개나리", "튤립", "백합", "국화", "카네이션", "코스모스", "민들레", "라일락", "연꽃", "동백꽃", "안개꽃", "수국", "나팔꽃", "봉숭아", "매화"] },
+        { category: "장소", examples: ["공원", "학교", "집", "병원", "도서관", "마트", "영화관", "놀이터", "수영장", "박물관", "미술관", "동물원", "식당", "카페", "백화점", "은행", "우체국", "약국", "미용실", "세탁소"] },
+        { category: "음료", examples: ["물", "우유", "주스", "콜라", "사이다", "커피", "녹차", "홍차", "코코아", "스무디", "에이드", "요구르트", "두유", "보리차", "식혜", "수정과", "이온음료", "핫초코", "맥주", "와인"] },
+        { category: "곤충", examples: ["개미", "나비", "벌", "잠자리", "매미", "무당벌레", "사마귀", "장수풍뎅이", "사슴벌레", "파리", "모기", "바퀴벌레", "거미", "지렁이", "달팽이", "귀뚜라미", "방아깨비", "소금쟁이", "물방개", "하루살이"] },
+        { category: "바다생물", examples: ["물고기", "오징어", "문어", "고래", "상어", "조개", "새우", "게", "불가사리", "해파리", "거북이", "돌고래", "멸치", "미역", "산호", "전복", "해삼", "멍게", "가오리", "복어"] },
+        { category: "부엌용품", examples: ["냄비", "후라이팬", "국자", "도마", "칼", "접시", "그릇", "컵", "숟가락", "젓가락", "포크", "주전자", "쟁반", "앞치마", "고무장갑", "수세미", "행주", "가위", "집게", "뒤집개"] },
+        { category: "편의점", examples: ["삼각김밥", "컵라면", "도시락", "샌드위치", "햄버거", "음료수", "과자", "껌", "사탕", "아이스크림", "핫바", "소시지", "맥주", "휴지", "건전지", "우산", "마스크", "충전기", "생수", "커피"] },
+        { category: "캠핑용품", examples: ["텐트", "침낭", "코펠", "버너", "의자", "테이블", "랜턴", "아이스박스", "돗자리", "망치", "모기향", "배낭", "수통", "나침반", "지도", "손전등", "로프", "화로대", "장작", "폴대"] },
+        { category: "영화장르", examples: ["액션", "코미디", "공포", "로맨스", "만화", "애니메이션", "다큐멘터리", "전쟁", "SF", "판타지", "뮤지컬", "스릴러", "드라마", "서부", "범죄", "가족", "모험", "미스터리", "느와르", "재난"] },
+        { category: "보석", examples: ["다이아몬드", "루비", "사파이어", "에메랄드", "진주", "금", "은", "수정", "호박", "옥", "비취", "오팔", "자수정", "터키석", "탄생석", "백금", "청금석", "페리도트", "가넷", "토파즈"] },
+        { category: "우주", examples: ["태양", "지구", "달", "별", "화성", "목성", "토성", "금성", "수성", "천왕성", "해왕성", "명왕성", "혜성", "은하수", "블랙홀", "우주선", "인공위성", "우주인", "로켓", "별똥별"] },
+        { category: "계절/시간", examples: ["봄", "여름", "가을", "겨울", "아침", "점심", "저녁", "밤", "새벽", "오전", "오후", "주말", "평일", "휴일", "명절", "크리스마스", "설날", "추석", "생일", "기념일"] }
       ];
 
       const SPEED_WORDS_POOL = [
-        { text: "과자", hint: "Snack" }, { text: "가방", hint: "Bag" }, { text: "가위", hint: "Scissors" },
-        { text: "거울", hint: "Mirror" }, { text: "구름", hint: "Cloud" }, { text: "김치", hint: "Kimchi" },
-        { text: "경찰", hint: "Police" }, { text: "기차", hint: "Train" }, { text: "공책", hint: "Notebook" },
-        { text: "가족", hint: "Family" }, { text: "구두", hint: "Shoes" }, { text: "국기", hint: "Flag" },
-        { text: "고기", hint: "Meat" }, { text: "가을", hint: "Autumn" }, { text: "겨울", hint: "Winter" },
-        { text: "공원", hint: "Park" }, { text: "공항", hint: "Airport" }, { text: "가수", hint: "Singer" },
-        { text: "가게", hint: "Store" }, { text: "그림", hint: "Picture" }, { text: "구슬", hint: "Marble" },
-        { text: "감자", hint: "Potato" }, { text: "고구마", hint: "Sweet Potato" }, { text: "귤", hint: "Tangerine" },
-        { text: "나무", hint: "Tree" }, { text: "나비", hint: "Butterfly" }, { text: "낚시", hint: "Fishing" },
-        { text: "남자", hint: "Man" }, { text: "날씨", hint: "Weather" }, { text: "노래", hint: "Song" },
-        { text: "눈사람", hint: "Snowman" }, { text: "농구", hint: "Basketball" },
-        { text: "냉장고", hint: "Refrigerator" }, { text: "냄비", hint: "Pot" }, { text: "누나", hint: "Older Sister" },
-        { text: "남동생", hint: "Younger Brother" }, { text: "눈", hint: "Eye/Snow" }, { text: "날개", hint: "Wing" },
-        { text: "다리", hint: "Bridge/Leg" }, { text: "달력", hint: "Calendar" }, { text: "도서관", hint: "Library" },
-        { text: "도시락", hint: "Lunch box" }, { text: "돼지", hint: "Pig" }, { text: "동물원", hint: "Zoo" },
-        { text: "두부", hint: "Tofu" }, { text: "딸기", hint: "Strawberry" }, { text: "떡볶이", hint: "Spicy Rice Cake" },
-        { text: "달", hint: "Moon" }, { text: "당근", hint: "Carrot" }, { text: "도넛", hint: "Donut" },
-        { text: "동화", hint: "Fairy Tale" }, { text: "동전", hint: "Coin" }, { text: "대문", hint: "Gate" },
-        { text: "라디오", hint: "Radio" }, { text: "라면", hint: "Ramen" }, { text: "로봇", hint: "Robot" },
-        { text: "리모컨", hint: "Remote Control" }, { text: "레몬", hint: "Lemon" }, { text: "리본", hint: "Ribbon" },
-        { text: "마음", hint: "Mind/Heart" }, { text: "모자", hint: "Hat" }, { text: "무지개", hint: "Rainbow" },
-        { text: "문", hint: "Door" }, { text: "물", hint: "Water" }, { text: "미국", hint: "USA" },
-        { text: "미술", hint: "Art" }, { text: "머리", hint: "Head" },
-        { text: "마을", hint: "Village" }, { text: "마트", hint: "Mart" }, { text: "만두", hint: "Dumpling" },
-        { text: "말", hint: "Horse/Word" }, { text: "모기", hint: "Mosquito" }, { text: "목걸이", hint: "Necklace" },
-        { text: "무", hint: "Radish" }, { text: "물고기", hint: "Fish" },
-        { text: "바나나", hint: "Banana" }, { text: "바다", hint: "Sea" }, { text: "바람", hint: "Wind" },
-        { text: "박수", hint: "Clap" }, { text: "반지", hint: "Ring" }, { text: "발", hint: "Foot" },
-        { text: "배", hint: "Ship/Pear/Belly" }, { text: "버스", hint: "Bus" }, { text: "병원", hint: "Hospital" },
-        { text: "비행기", hint: "Airplane" }, { text: "빵", hint: "Bread" },
-        { text: "방", hint: "Room" }, { text: "밤", hint: "Night/Chestnut" }, { text: "밥", hint: "Rice" },
-        { text: "바지", hint: "Pants" }, { text: "비누", hint: "Soap" }, { text: "비", hint: "Rain" },
-        { text: "뱀", hint: "Snake" }, { text: "별", hint: "Star" }, { text: "불", hint: "Fire" },
-        { text: "사과", hint: "Apple" }, { text: "사랑", hint: "Love" }, { text: "사진", hint: "Photo" },
-        { text: "산", hint: "Mountain" }, { text: "선물", hint: "Gift" }, { text: "선생님", hint: "Teacher" },
-        { text: "소방관", hint: "Firefighter" }, { text: "손", hint: "Hand" }, { text: "수박", hint: "Watermelon" },
-        { text: "수영", hint: "Swimming" }, { text: "시간", hint: "Time" }, { text: "시계", hint: "Clock" },
-        { text: "신발", hint: "Shoes" },
-        { text: "사자", hint: "Lion" }, { text: "사탕", hint: "Candy" }, { text: "새", hint: "Bird" },
-        { text: "색종이", hint: "Colored Paper" }, { text: "소", hint: "Cow" }, { text: "소금", hint: "Salt" },
-        { text: "숟가락", hint: "Spoon" }, { text: "숲", hint: "Forest" }, { text: "스키", hint: "Ski" },
-        { text: "아기", hint: "Baby" }, { text: "아빠", hint: "Dad" }, { text: "아이스크림", hint: "Ice Cream" },
-        { text: "안경", hint: "Glasses" }, { text: "약국", hint: "Pharmacy" }, { text: "양말", hint: "Socks" },
-        { text: "어머니", hint: "Mother" }, { text: "얼굴", hint: "Face" }, { text: "여름", hint: "Summer" },
-        { text: "여행", hint: "Travel" }, { text: "연필", hint: "Pencil" }, { text: "영화", hint: "Movie" },
-        { text: "우산", hint: "Umbrella" }, { text: "우유", hint: "Milk" }, { text: "운동", hint: "Exercise" },
-        { text: "의자", hint: "Chair" }, { text: "이불", hint: "Blanket" }, { text: "인형", hint: "Doll" },
-        { text: "악어", hint: "Crocodile" }, { text: "앞치마", hint: "Apron" }, { text: "약", hint: "Medicine" },
-        { text: "엘리베이터", hint: "Elevator" }, { text: "여우", hint: "Fox" }, { text: "연", hint: "Kite" },
-        { text: "오리", hint: "Duck" }, { text: "오이", hint: "Cucumber" }, { text: "옷", hint: "Clothes" },
-        { text: "왕", hint: "King" }, { text: "요리사", hint: "Cook" }, { text: "우체국", hint: "Post Office" },
-        { text: "원숭이", hint: "Monkey" }, { text: "은행", hint: "Bank" }, { text: "입", hint: "Mouth" },
-        { text: "자전거", hint: "Bicycle" }, { text: "자동차", hint: "Car" }, { text: "장갑", hint: "Gloves" },
-        { text: "장난감", hint: "Toy" }, { text: "전화", hint: "Telephone" }, { text: "접시", hint: "Plate" },
-        { text: "지갑", hint: "Wallet" }, { text: "지도", hint: "Map" }, { text: "지우개", hint: "Eraser" },
-        { text: "집", hint: "House" },
-        { text: "잠자리", hint: "Dragonfly" }, { text: "저녁", hint: "Dinner" }, { text: "주스", hint: "Juice" },
-        { text: "쥐", hint: "Mouse" }, { text: "지하철", hint: "Subway" }, { text: "창문", hint: "Window" },
-        { text: "책", hint: "Book" }, { text: "책상", hint: "Desk" }, { text: "청소기", hint: "Vacuum Cleaner" }, 
-        { text: "축구", hint: "Soccer" }, { text: "친구", hint: "Friend" }, { text: "치과", hint: "Dentist" }, 
-        { text: "치마", hint: "Skirt" }, { text: "칫솔", hint: "Toothbrush" },
-        { text: "참새", hint: "Sparrow" }, { text: "천사", hint: "Angel" }, { text: "초콜릿", hint: "Chocolate" },
-        { text: "치즈", hint: "Cheese" }, { text: "치킨", hint: "Chicken" }, { text: "칠판", hint: "Blackboard" },
-        { text: "카메라", hint: "Camera" }, { text: "컴퓨터", hint: "Computer" }, { text: "코", hint: "Nose" },
-        { text: "코끼리", hint: "Elephant" }, { text: "케이크", hint: "Cake" },
-        { text: "칼", hint: "Knife" }, { text: "캥거루", hint: "Kangaroo" }, { text: "컵", hint: "Cup" },
-        { text: "콩", hint: "Bean" }, { text: "크레파스", hint: "Crayon" }, { text: "키위", hint: "Kiwi" },
-        { text: "택시", hint: "Taxi" }, { text: "태권도", hint: "Taekwondo" }, { text: "텔레비전", hint: "TV" },
-        { text: "토끼", hint: "Rabbit" }, { text: "토마토", hint: "Tomato" },
-        { text: "타조", hint: "Ostrich" }, { text: "태양", hint: "Sun" }, { text: "트럭", hint: "Truck" },
-        { text: "티셔츠", hint: "T-shirt" },
-        { text: "파", hint: "Green Onion" }, { text: "파랑", hint: "Blue" }, { text: "편지", hint: "Letter" },
-        { text: "포도", hint: "Grape" }, { text: "피아노", hint: "Piano" }, { text: "피자", hint: "Pizza" },
-        { text: "파인애플", hint: "Pineapple" }, { text: "펭귄", hint: "Penguin" }, { text: "포크", hint: "Fork" },
-        { text: "표", hint: "Ticket" }, { text: "풀", hint: "Glue/Grass" }, { text: "풍선", hint: "Balloon" },
-        { text: "학교", hint: "School" }, { text: "한국", hint: "Korea" }, { text: "할머니", hint: "Grandmother" },
-        { text: "햄버거", hint: "Hamburger" }, { text: "호랑이", hint: "Tiger" }, { text: "화장실", hint: "Restroom" },
-        { text: "회사", hint: "Company" }, { text: "휴지", hint: "Tissue" },
-        { text: "하마", hint: "Hippo" }, { text: "하늘", hint: "Sky" }, { text: "해", hint: "Sun" },
-        { text: "해바라기", hint: "Sunflower" }, { text: "호박", hint: "Pumpkin" }, { text: "화가", hint: "Painter" },
-        { text: "화분", hint: "Flowerpot" }
+        { text: "과자" }, { text: "가방" }, { text: "가위" },
+        { text: "거울" }, { text: "구름" }, { text: "김치" },
+        { text: "경찰" }, { text: "기차" }, { text: "공책" },
+        { text: "가족" }, { text: "구두" }, { text: "국기" },
+        { text: "고기" }, { text: "가을" }, { text: "겨울" },
+        { text: "공원" }, { text: "공항" }, { text: "가수" },
+        { text: "가게" }, { text: "그림" }, { text: "구슬" },
+        { text: "감자" }, { text: "고구마" }, { text: "귤" },
+        { text: "나무" }, { text: "나비" }, { text: "낚시" },
+        { text: "남자" }, { text: "날씨" }, { text: "노래" },
+        { text: "눈사람" }, { text: "농구" }, { text: "냉장고" },
+        { text: "냄비" }, { text: "누나" }, { text: "남동생" },
+        { text: "눈" }, { text: "날개" }, { text: "다리" },
+        { text: "달력" }, { text: "도서관" }, { text: "도시락" },
+        { text: "돼지" }, { text: "동물원" }, { text: "두부" },
+        { text: "딸기" }, { text: "떡볶이" }, { text: "달" },
+        { text: "당근" }, { text: "도넛" }, { text: "동화" },
+        { text: "동전" }, { text: "대문" }, { text: "라디오" },
+        { text: "라면" }, { text: "로봇" }, { text: "리모컨" },
+        { text: "레몬" }, { text: "리본" }, { text: "마음" },
+        { text: "모자" }, { text: "무지개" }, { text: "문" },
+        { text: "물" }, { text: "미국" }, { text: "미술" },
+        { text: "머리" }, { text: "마을" }, { text: "마트" },
+        { text: "만두" }, { text: "말" }, { text: "모기" },
+        { text: "목걸이" }, { text: "무" }, { text: "물고기" },
+        { text: "바나나" }, { text: "바다" }, { text: "바람" },
+        { text: "박수" }, { text: "반지" }, { text: "발" },
+        { text: "배" }, { text: "버스" }, { text: "병원" },
+        { text: "비행기" }, { text: "빵" }, { text: "방" },
+        { text: "밤" }, { text: "밥" }, { text: "바지" },
+        { text: "비누" }, { text: "비" }, { text: "뱀" },
+        { text: "별" }, { text: "불" }, { text: "사과" },
+        { text: "사랑" }, { text: "사진" }, { text: "산" },
+        { text: "선물" }, { text: "선생님" }, { text: "소방관" },
+        { text: "손" }, { text: "수박" }, { text: "수영" },
+        { text: "시간" }, { text: "시계" }, { text: "신발" },
+        { text: "사자" }, { text: "사탕" }, { text: "새" },
+        { text: "색종이" }, { text: "소" }, { text: "소금" },
+        { text: "숟가락" }, { text: "숲" }, { text: "스키" },
+        { text: "아기" }, { text: "아빠" }, { text: "아이스크림" },
+        { text: "안경" }, { text: "약국" }, { text: "양말" },
+        { text: "어머니" }, { text: "얼굴" }, { text: "여름" },
+        { text: "여행" }, { text: "연필" }, { text: "영화" },
+        { text: "우산" }, { text: "우유" }, { text: "운동" },
+        { text: "의자" }, { text: "이불" }, { text: "인형" },
+        { text: "자전거" }, { text: "자동차" }, { text: "장갑" },
+        { text: "장난감" }, { text: "전화" }, { text: "접시" },
+        { text: "지갑" }, { text: "지도" }, { text: "지우개" },
+        { text: "집" }, { text: "잠자리" }, { text: "저녁" },
+        { text: "주스" }, { text: "쥐" }, { text: "지하철" },
+        { text: "창문" }, { text: "책" }, { text: "책상" },
+        { text: "청소기" }, { text: "축구" }, { text: "친구" },
+        { text: "치과" }, { text: "치마" }, { text: "칫솔" },
+        { text: "카메라" }, { text: "컴퓨터" }, { text: "코" },
+        { text: "코끼리" }, { text: "케이크" }, { text: "택시" },
+        { text: "태권도" }, { text: "텔레비전" }, { text: "토끼" },
+        { text: "토마토" }, { text: "파" }, { text: "파랑" },
+        { text: "편지" }, { text: "포도" }, { text: "피아노" },
+        { text: "피자" }, { text: "학교" }, { text: "한국" },
+        { text: "할머니" }, { text: "햄버거" }, { text: "호랑이" },
+        { text: "화장실" }, { text: "회사" }, { text: "휴지" },
+        { text: "가면" }, { text: "가로수" }, { text: "가슴" },
+        { text: "개미" }, { text: "거미" }, { text: "거북이" },
+        { text: "건물" }, { text: "걸레" }, { text: "검정" },
+        { text: "게임" }, { text: "고래" }, { text: "고추" },
+        { text: "골프" }, { text: "공" }, { text: "공룡" },
+        { text: "나팔" }, { text: "낙타" }, { text: "냄새" },
+        { text: "넥타이" }, { text: "노트" }, { text: "농부" },
+        { text: "뉴스" }, { text: "느낌" }, { text: "늑대" },
+        { text: "다람쥐" }, { text: "다리미" }, { text: "단추" },
+        { text: "닭" }, { text: "담요" }, { text: "대나무" },
+        { text: "대추" }, { text: "도끼" }, { text: "도둑" },
+        { text: "도토리" }, { text: "독수리" }, { text: "돌" },
+        { text: "라이터" }, { text: "럭비" }, { text: "로켓" },
+        { text: "롤러" }, { text: "립스틱" },
+        { text: "마스크" }, { text: "마이크" }, { text: "마차" },
+        { text: "만화" }, { text: "망치" }, { text: "매미" },
+        { text: "머리카락" }, { text: "먹물" }, { text: "메뚜기" },
+        { text: "멜론" }, { text: "면도기" }, { text: "명함" },
+        { text: "바구니" }, { text: "바늘" }, { text: "바퀴" },
+        { text: "박스" }, { text: "발가락" }, { text: "밤하늘" },
+        { text: "배추" }, { text: "백조" }, { text: "버섯" },
+        { text: "벌" }, { text: "베개" }, { text: "벽" },
+        { text: "사다리" }, { text: "사람" }, { text: "사슴" },
+        { text: "사이이다" }, { text: "산토끼" }, { text: "살구" },
+        { text: "삽" }, { text: "상어" }, { text: "새우" },
+        { text: "샌드위치" }, { text: "생일" }, { text: "샴푸" },
+        { text: "아파트" }, { text: "악기" }, { text: "안개" },
+        { text: "알통" }, { text: "양" }, { text: "양동이" },
+        { text: "양초" }, { text: "얼룩말" }, { text: "엄마" },
+        { text: "에어컨" }, { text: "연기" }, { text: "연못" },
+        { text: "자" }, { text: "자두" }, { text: "자석" },
+        { text: "잠수함" }, { text: "장미" }, { text: "장화" },
+        { text: "저금통" }, { text: "전구" }, { text: "젓가락" },
+        { text: "종이" }, { text: "주사위" }, { text: "주전자" },
+        { text: "참외" }, { text: "창고" }, { text: "채소" },
+        { text: "철봉" }, { text: "청진기" }, { text: "체리" },
+        { text: "초" }, { text: "초밥" }, { text: "총" },
+        { text: "축구공" }, { text: "치약" },
+        { text: "칼" }, { text: "캥거루" }, { text: "컵" },
+        { text: "콩" }, { text: "크레파스" }, { text: "키위" },
+        { text: "카드" }, { text: "카레" }, { text: "카페" },
+        { text: "코스모스" }, { text: "코트" }, { text: "콜라" },
+        { text: "크리스마스" }, { text: "큰북" },
+        { text: "타이어" }, { text: "탁구" }, { text: "탈" },
+        { text: "탑" }, { text: "태극기" }, { text: "테니스" },
+        { text: "토스트" }, { text: "톱" }, { text: "통장" },
+        { text: "트럼펫" },
+        { text: "파인애플" }, { text: "펭귄" }, { text: "포크" },
+        { text: "파리" }, { text: "파프리카" }, { text: "판다" },
+        { text: "팔" }, { text: "팥" }, { text: "팽이" },
+        { text: "편의점" }, { text: "포도주" }, { text: "폭죽" },
+        { text: "표지판" }, { text: "피망" },
+        { text: "하마" }, { text: "하늘" }, { text: "해" },
+        { text: "하루" }, { text: "할아버지" }, { text: "항아리" },
+        { text: "해마" }, { text: "핸드폰" }, { text: "허수아비" },
+        { text: "헬리콥터" }, { text: "호루라기" }, { text: "호수" }
       ];
 
       // --- LOGIC ---
@@ -294,7 +319,7 @@
         
         const item = currentDeck.pop();
         
-        // Safety check if pop fails (should not happen if data exists)
+        // Safety check
         if (!item) {
              const freshDeck = shuffle(masterData);
              return { item: freshDeck.pop(), newDeck: freshDeck };
@@ -332,11 +357,9 @@
             setInitials(item.initial);
             setExamples(shuffle(item.examples).slice(0, 6));
           } catch(e) { 
-            // Fallback
             setInitials("ㄱ ㅅ"); 
             setExamples(["감사", "구슬"]); 
           }
-          // Short delay for visual effect
           setTimeout(() => setLoading(false), 300);
         };
 
@@ -454,12 +477,19 @@
         useEffect(() => {
             setLoading(true);
             try {
-                if (speedDeck.length < 10) speedDeck = shuffle(SPEED_WORDS_POOL);
-                const selected = speedDeck.splice(0, 10);
-                if (selected.length < 10) {
-                    speedDeck = shuffle(SPEED_WORDS_POOL);
-                    selected.push(...speedDeck.splice(0, 10 - selected.length));
+                if (speedDeck.length < 50) speedDeck = shuffle(SPEED_WORDS_POOL);
+                
+                // Fetch a large batch to prevent repetition
+                const selected = speedDeck.splice(0, 50);
+                
+                // If deck ran out, refill and complete the batch
+                if (selected.length < 50) {
+                    const refill = shuffle(SPEED_WORDS_POOL);
+                    speedDeck = refill;
+                    const more = speedDeck.splice(0, 50 - selected.length);
+                    selected.push(...more);
                 }
+                
                 setWords(selected.map((w, i) => ({...w, id: i})));
                 setGameActive(true);
             } catch(e) { 
@@ -480,7 +510,16 @@
 
         const handleNextWord = () => { if (!gameActive) return; setScore(p => p + 10); nextCard(); };
         const handlePass = () => { if (!gameActive) return; nextCard(); };
-        const nextCard = () => { if (currentIndex < words.length - 1) setCurrentIndex(p => p + 1); else setCurrentIndex(0); };
+        const nextCard = () => { 
+            // Simply iterate. Since we fetched 50, it's enough for 60s.
+            if (currentIndex < words.length - 1) {
+                setCurrentIndex(p => p + 1); 
+            } else {
+                // End game if we somehow ran out of 50 words
+                setGameActive(false); 
+                onGameOver({ score }); 
+            }
+        };
 
         if (loading) return <div className="flex flex-col items-center justify-center h-64 text-gray-900"><IconLoader className="animate-spin w-12 h-12" /><p className="font-display text-xl animate-pulse mt-4">준비중...</p></div>;
         const currentWord = words[currentIndex] || {text: '...', hint: '...'};
@@ -494,14 +533,14 @@
             <div className="card-pop p-8 w-full text-center relative overflow-hidden bg-white">
                <div className="py-8 w-full my-2">
                   <div className="text-7xl font-display text-gray-900 mb-6 animate-pop key={currentWord.text}">{currentWord.text}</div>
-                  <div className="text-gray-900 font-bold text-xl bg-theme-yellow inline-block px-6 py-2 rounded-lg border-2 border-theme-black shadow-pop-sm">{currentWord.hint}</div>
+                  {/* Hint Removed as requested */}
                </div>
                <p className="text-theme-purple/60 text-xs mt-4 font-bold uppercase tracking-widest">SPEED MODE</p>
             </div>
 
             <div className="grid grid-cols-2 gap-4 w-full">
                <button onClick={handlePass} className="h-20 rounded-2xl border-2 border-theme-black bg-white text-gray-900 font-display text-2xl hover:bg-gray-50 active:scale-95 transition-all flex flex-col items-center justify-center gap-1 shadow-pop-sm"><IconX /><span>패스</span></button>
-               <button onClick={handleNextWord} className="h-20 rounded-2xl bg-theme-purple text-white font-display text-3xl hover:bg-violet-600 active:translate-y-1 transition-all flex flex-col items-center justify-center gap-1 shadow-pop-sm border-2 border-theme-black"><IconArrowRight /><span>정답!</span></button>
+               <button onClick={handleNextWord} className="h-20 rounded-2xl bg-theme-purple text-white font-display text-3xl hover:bg-violet-600 active:translate-y-1 transition-all flex flex-col items-center justify-center gap-1 shadow-pop-sm border-2 border-theme-black"><IconArrowRight /><span>다시뽑기</span></button>
             </div>
           </div>
         );
