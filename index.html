@@ -11,14 +11,13 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
     
-    <!-- React & ReactDOM (UMD - 안정적인 글로벌 로딩) -->
+    <!-- React & ReactDOM (UMD) -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     
     <!-- Babel Standalone -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
-    <!-- Tailwind Config -->
     <script>
       tailwind.config = {
         theme: {
@@ -40,16 +39,6 @@
             animation: {
               'bounce-slight': 'bounce-slight 2s infinite',
               'pop': 'pop 0.3s ease-out',
-            },
-            keyframes: {
-              'bounce-slight': {
-                '0%, 100%': { transform: 'translateY(-2%)' },
-                '50%': { transform: 'translateY(0)' },
-              },
-              'pop': {
-                '0%': { transform: 'scale(0.8)', opacity: '0' },
-                '100%': { transform: 'scale(1)', opacity: '1' },
-              }
             }
           },
         },
@@ -68,33 +57,25 @@
   <body>
     <div id="root"></div>
 
-    <!-- MAIN APP SCRIPT -->
     <script type="text/babel">
       const { useState, useEffect, useRef } = React;
 
-      // --- ICONS (Robust SVG Components) ---
-      // props를 받아 spread(...props)하여 className 등이 적용되도록 수정
-      const Icons = {
-        Cookie: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"/><path d="M8.5 8.5v.01"/><path d="M16 15.5v.01"/><path d="M12 12v.01"/><path d="M11 17v.01"/><path d="M7 14v.01"/></svg>,
-        Grid: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 12h18"/><path d="M12 3v18"/></svg>,
-        Zap: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
-        Align: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M3 6h18"/><path d="M3 12h18"/><path d="M3 18h18"/></svg>,
-        Trophy: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>,
-        Star: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
-        Sparkles: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>,
-        ArrowLeft: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>,
-        ArrowRight: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>,
-        Lightbulb: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-1 1.5-2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>,
-        Loader: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>,
-        Timer: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/></svg>,
-        XCircle: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
-      };
-
-      // --- CONSTANTS ---
-      const GameType = { NONE: 'NONE', INITIAL: 'INITIAL', CATEGORY: 'CATEGORY', SPEED: 'SPEED' };
-      const Difficulty = { EASY: 'EASY', MEDIUM: 'MEDIUM', HARD: 'HARD' };
+      // --- SIMPLE ICONS (안전한 SVG 컴포넌트) ---
+      const IconCookie = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"/><path d="M8.5 8.5v.01"/><path d="M16 15.5v.01"/><path d="M12 12v.01"/><path d="M11 17v.01"/><path d="M7 14v.01"/></svg>;
+      const IconGrid = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 12h18"/><path d="M12 3v18"/></svg>;
+      const IconZap = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>;
+      const IconAlign = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M3 12h18"/><path d="M3 18h18"/></svg>;
+      const IconTrophy = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>;
+      const IconStar = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>;
+      const IconArrowLeft = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>;
+      const IconArrowRight = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>;
+      const IconLightbulb = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-1 1.5-2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>;
+      const IconLoader = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>;
+      const IconTimer = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/></svg>;
+      const IconX = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 18 18"/></svg>;
 
       // --- DATA ---
+      // 안전을 위해 데이터를 함수 내부가 아닌 전역 상수로 정의
       const INITIAL_DATA = [
         { initial: "ㄱ ㅅ", examples: ["감사", "구슬", "고수", "가슴", "기술", "기숙", "개선", "공사", "기사", "간식"] },
         { initial: "ㅇ ㅈ", examples: ["의자", "우주", "아주", "여자", "연주", "인정", "유저", "옷장", "운전", "이전"] },
@@ -164,16 +145,16 @@
         { category: "간식", examples: ["과자", "초콜릿", "사탕", "젤리", "아이스크림", "케이크", "빵", "쿠키", "푸딩", "요거트"] },
         { category: "꽃", examples: ["장미", "해바라기", "무궁화", "벚꽃", "진달래", "개나리", "튤립", "백합", "국화", "카네이션"] },
         { category: "장소", examples: ["공원", "학교", "집", "병원", "도서관", "마트", "영화관", "놀이터", "수영장", "박물관"] },
-        { category: "음료", examples: ["물", "우유", "주스", "콜라", "사이다", "커피", "녹차", "홍차", "코코아", "스무디", "에이드", "요구르트", "두유", "보리차", "식혜"] },
-        { category: "곤충", examples: ["개미", "나비", "벌", "잠자리", "매미", "무당벌레", "사마귀", "장수풍뎅이", "사슴벌레", "파리", "모기", "바퀴벌레", "거미", "지렁이", "달팽이"] },
-        { category: "바다생물", examples: ["물고기", "오징어", "문어", "고래", "상어", "조개", "새우", "게", "불가사리", "해파리", "거북이", "돌고래", "멸치", "미역", "산호"] },
-        { category: "부엌용품", examples: ["냄비", "후라이팬", "국자", "도마", "칼", "접시", "그릇", "컵", "숟가락", "젓가락", "포크", "주전자", "쟁반", "앞치마", "고무장갑"] },
-        { category: "편의점", examples: ["삼각김밥", "컵라면", "도시락", "샌드위치", "햄버거", "음료수", "과자", "껌", "사탕", "아이스크림", "핫바", "소시지", "맥주", "휴지", "건전지"] },
-        { category: "캠핑용품", examples: ["텐트", "침낭", "코펠", "버너", "의자", "테이블", "랜턴", "아이스박스", "돗자리", "망치", "모기향", "배낭", "수통", "나침반", "지도"] },
-        { category: "영화장르", examples: ["액션", "코미디", "공포", "로맨스", "만화", "애니메이션", "다큐멘터리", "전쟁", "SF", "판타지", "뮤지컬", "스릴러", "드라마", "서부", "범죄"] },
-        { category: "보석", examples: ["다이아몬드", "루비", "사파이어", "에메랄드", "진주", "금", "은", "수정", "호박", "옥", "비취", "오팔", "자수정", "터키석", "탄생석"] },
-        { category: "우주", examples: ["태양", "지구", "달", "별", "화성", "목성", "토성", "금성", "수성", "천왕성", "해왕성", "명왕성", "혜성", "은하수", "블랙홀"] },
-        { category: "계절/시간", examples: ["봄", "여름", "가을", "겨울", "아침", "점심", "저녁", "밤", "새벽", "오전", "오후", "주말", "평일", "휴일", "명절"] }
+        { category: "음료", examples: ["물", "우유", "주스", "콜라", "사이다", "커피", "녹차", "홍차", "코코아", "스무디"] },
+        { category: "곤충", examples: ["개미", "나비", "벌", "잠자리", "매미", "무당벌레", "사마귀", "장수풍뎅이", "사슴벌레", "파리"] },
+        { category: "바다생물", examples: ["물고기", "오징어", "문어", "고래", "상어", "조개", "새우", "게", "불가사리", "해파리"] },
+        { category: "부엌용품", examples: ["냄비", "후라이팬", "국자", "도마", "칼", "접시", "그릇", "컵", "숟가락", "젓가락"] },
+        { category: "편의점", examples: ["삼각김밥", "컵라면", "도시락", "샌드위치", "햄버거", "음료수", "과자", "껌", "사탕", "아이스크림"] },
+        { category: "캠핑용품", examples: ["텐트", "침낭", "코펠", "버너", "의자", "테이블", "랜턴", "아이스박스", "돗자리", "망치"] },
+        { category: "영화장르", examples: ["액션", "코미디", "공포", "로맨스", "만화", "애니메이션", "다큐멘터리", "전쟁", "SF", "판타지"] },
+        { category: "보석", examples: ["다이아몬드", "루비", "사파이어", "에메랄드", "진주", "금", "은", "수정", "호박", "옥"] },
+        { category: "우주", examples: ["태양", "지구", "달", "별", "화성", "목성", "토성", "금성", "수성", "천왕성"] },
+        { category: "계절/시간", examples: ["봄", "여름", "가을", "겨울", "아침", "점심", "저녁", "밤", "새벽", "오전"] }
       ];
 
       const SPEED_WORDS_POOL = [
@@ -260,78 +241,30 @@
         { text: "화분", hint: "Flowerpot" }
       ];
 
-      // --- DECK UTILS ---
+      // --- LOGIC ---
       const shuffle = (array) => [...array].sort(() => Math.random() - 0.5);
 
+      // 덱 관리 변수 (전역)
       let initialDeck = [];
       let categoryDeck = [];
       let speedDeck = [];
 
-      const getNextItemFromDeck = (deck, masterData, refillThreshold = 0) => {
-        let currentDeck = deck;
-        // 데이터가 없거나 임계값 이하면 리필
-        if (!currentDeck || currentDeck.length <= refillThreshold) {
+      // 덱에서 아이템 뽑기 (안전장치 추가)
+      const getNextItemFromDeck = (deck, masterData) => {
+        let currentDeck = deck || [];
+        // 데이터가 없거나 0개면 리필
+        if (currentDeck.length === 0) {
             currentDeck = shuffle(masterData);
         }
+        
         const item = currentDeck.pop();
-        // 만약 pop했는데도 undefined라면(데이터가 비었을 경우 대비)
+        
+        // 만약 pop 실패시 강제 리필 후 재시도
         if (!item) {
              const freshDeck = shuffle(masterData);
              return { item: freshDeck.pop(), newDeck: freshDeck };
         }
         return { item, newDeck: currentDeck };
-      };
-
-      const generateInitials = async (difficulty) => {
-        await new Promise(resolve => setTimeout(resolve, 300));
-        // 안전장치
-        if (!initialDeck || initialDeck.length === 0) initialDeck = shuffle(INITIAL_DATA);
-        
-        const { item, newDeck } = getNextItemFromDeck(initialDeck, INITIAL_DATA);
-        initialDeck = newDeck;
-        return item ? item.initial : "ㄱ ㅅ"; // Fallback
-      };
-
-      const generateInitialExamples = async (initials) => {
-        await new Promise(resolve => setTimeout(resolve, 200));
-        const item = INITIAL_DATA.find(d => d.initial === initials);
-        return item ? shuffle(item.examples).slice(0, 6) : ["데이터 없음"];
-      };
-
-      const generateCategory = async (difficulty) => {
-        await new Promise(resolve => setTimeout(resolve, 300));
-        if (!categoryDeck || categoryDeck.length === 0) categoryDeck = shuffle(CATEGORY_DATA);
-        
-        const { item, newDeck } = getNextItemFromDeck(categoryDeck, CATEGORY_DATA);
-        categoryDeck = newDeck;
-        return item ? item.category : "과일"; // Fallback
-      };
-
-      const generateCategoryExamples = async (category) => {
-        await new Promise(resolve => setTimeout(resolve, 200));
-        const item = CATEGORY_DATA.find(d => d.category === category);
-        return item ? shuffle(item.examples).slice(0, 6) : ["데이터 없음"];
-      };
-
-      const fetchSpeedWords = async (difficulty) => {
-        await new Promise(resolve => setTimeout(resolve, 500));
-        if (!speedDeck || speedDeck.length < 10) speedDeck = shuffle(SPEED_WORDS_POOL);
-        
-        // 10개 추출
-        const selected = speedDeck.splice(0, 10);
-        // 만약 부족하면 다시 채워서 보충
-        if (selected.length < 10) {
-            const refill = shuffle(SPEED_WORDS_POOL);
-            speedDeck = refill;
-            const more = speedDeck.splice(0, 10 - selected.length);
-            selected.push(...more);
-        }
-
-        return selected.map((item, idx) => ({
-            id: `speed-${Date.now()}-${idx}`,
-            text: item.text,
-            hint: item.hint
-        }));
       };
 
       // --- COMPONENTS ---
@@ -344,122 +277,106 @@
           success: "bg-accent text-brand-900 hover:bg-accent-hover border-2 border-accent-hover",
         };
         const sizes = { sm: "px-3 py-1 text-sm", md: "px-6 py-3 text-lg", lg: "px-8 py-4 text-xl" };
-        return (
-          <button className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`} {...props}>
-            {children}
-          </button>
-        );
+        return <button className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`} {...props}>{children}</button>;
       };
 
-      // --- VIEWS ---
-      const InitialGame = ({ difficulty, onGameOver, onBack }) => {
+      const InitialGame = ({ onGameOver }) => {
         const [initials, setInitials] = useState('');
         const [loading, setLoading] = useState(false);
         const [examples, setExamples] = useState([]);
         const [showExamples, setShowExamples] = useState(false);
-        const [loadingExamples, setLoadingExamples] = useState(false);
         const [round, setRound] = useState(1);
 
-        useEffect(() => { loadNewInitials(); }, []);
-
-        const loadNewInitials = async () => {
-          setLoading(true); setExamples([]); setShowExamples(false);
+        const loadNew = () => {
+          setLoading(true); setShowExamples(false);
           try {
-            const newInitials = await generateInitials(difficulty);
-            setInitials(newInitials);
+            const { item, newDeck } = getNextItemFromDeck(initialDeck, INITIAL_DATA);
+            initialDeck = newDeck;
+            setInitials(item.initial);
+            setExamples(shuffle(item.examples).slice(0, 6));
           } catch(e) {
-            setInitials("ㅇ ㄹ"); // Error fallback
+            setInitials("ㅇ ㄹ");
+            setExamples(["오류"]);
           }
-          setLoading(false);
+          // 최소 로딩 시간 0.3초
+          setTimeout(() => setLoading(false), 300);
         };
 
-        const handleShowExamples = async () => {
-          if (showExamples) return;
-          setLoadingExamples(true);
-          const exs = await generateInitialExamples(initials);
-          setExamples(exs); setShowExamples(true); setLoadingExamples(false);
-        };
+        useEffect(() => { loadNew(); }, []);
 
-        const handleNext = () => { setRound(p => p + 1); loadNewInitials(); };
+        const handleNext = () => { setRound(p => p + 1); loadNew(); };
 
         return (
           <div className="w-full max-w-lg mx-auto flex flex-col items-center gap-6">
-            <div className="bg-white rounded-[2rem] p-8 shadow-xl border-2 border-brand-100 w-full text-center relative overflow-hidden">
-              <h2 className="text-brand-400 font-bold tracking-widest mb-4 uppercase flex items-center justify-center gap-2"><span>문제 {round}</span></h2>
-              {loading ? <div className="h-40 flex items-center justify-center"><Icons.Loader className="w-10 h-10 text-brand-400 animate-spin" /></div> : 
+            <div className="bg-white rounded-[2rem] p-8 shadow-xl border-2 border-brand-100 w-full text-center">
+              <h2 className="text-brand-400 font-bold tracking-widest mb-4 uppercase">문제 {round}</h2>
+              {loading ? <div className="h-40 flex items-center justify-center"><IconLoader /></div> : 
               <div className="py-8 bg-brand-50 rounded-3xl border border-brand-100 mb-6">
                   <div className="text-6xl md:text-7xl font-display text-brand-600 tracking-[0.2em]">{initials}</div>
                   <p className="text-brand-900/40 text-sm font-medium mt-4">이 초성으로 단어를 만들어보세요!</p>
               </div>}
               {showExamples && <div className="bg-accent-light/50 p-4 rounded-xl border border-accent animate-pop mb-6">
-                  <h4 className="text-sm font-bold text-brand-800 mb-2 flex items-center justify-center gap-1"><Icons.Lightbulb className="w-4 h-4 text-accent" /> 정답 예시</h4>
+                  <h4 className="text-sm font-bold text-brand-800 mb-2 flex items-center justify-center gap-1"><IconLightbulb /> 정답 예시</h4>
                   <div className="flex flex-wrap justify-center gap-2">{examples.map((ex, idx) => <span key={idx} className="bg-white text-brand-900 px-3 py-1 rounded-full text-lg font-display shadow-sm border border-brand-100">{ex}</span>)}</div>
               </div>}
               <div className="grid gap-3">
-                  {!showExamples && <Button onClick={handleShowExamples} variant="secondary" className="w-full" disabled={loading || loadingExamples}>{loadingExamples ? <Icons.Loader className="animate-spin w-5 h-5"/> : <Icons.Lightbulb className="w-5 h-5" />} 예시 정답 보기</Button>}
-                  <Button onClick={handleNext} variant="success" className="w-full" disabled={loading}>다음 문제 <Icons.ArrowRight className="w-5 h-5" /></Button>
+                  {!showExamples && <Button onClick={() => setShowExamples(true)} variant="secondary" className="w-full" disabled={loading}><IconLightbulb /> 예시 정답 보기</Button>}
+                  <Button onClick={handleNext} variant="success" className="w-full" disabled={loading}>다음 문제 <IconArrowRight /></Button>
               </div>
             </div>
-            <Button onClick={() => onGameOver({score: 0, correct: 0, wrong: 0})} variant="secondary" className="mt-4 text-sm py-2">그만하기</Button>
+            <Button onClick={() => onGameOver({score: 0})} variant="secondary" className="mt-4 text-sm py-2">그만하기</Button>
           </div>
         );
       };
 
-      const CategoryGame = ({ difficulty, onGameOver }) => {
+      const CategoryGame = ({ onGameOver }) => {
         const [category, setCategory] = useState('');
         const [loading, setLoading] = useState(false);
         const [examples, setExamples] = useState([]);
         const [showExamples, setShowExamples] = useState(false);
-        const [loadingExamples, setLoadingExamples] = useState(false);
         const [round, setRound] = useState(1);
 
-        useEffect(() => { loadCategory(); }, []);
-
-        const loadCategory = async () => {
-          setLoading(true); setExamples([]); setShowExamples(false);
+        const loadNew = () => {
+          setLoading(true); setShowExamples(false);
           try {
-            const newCat = await generateCategory(difficulty);
-            setCategory(newCat);
+            const { item, newDeck } = getNextItemFromDeck(categoryDeck, CATEGORY_DATA);
+            categoryDeck = newDeck;
+            setCategory(item.category);
+            setExamples(shuffle(item.examples).slice(0, 6));
           } catch(e) {
             setCategory("과일");
           }
-          setLoading(false);
+          setTimeout(() => setLoading(false), 300);
         };
 
-        const handleShowExamples = async () => {
-          if (showExamples) return;
-          setLoadingExamples(true);
-          const exs = await generateCategoryExamples(category);
-          setExamples(exs); setShowExamples(true); setLoadingExamples(false);
-        };
-
-        const handleNext = () => { setRound(p => p + 1); loadCategory(); };
+        useEffect(() => { loadNew(); }, []);
+        const handleNext = () => { setRound(p => p + 1); loadNew(); };
 
         return (
           <div className="w-full max-w-lg mx-auto flex flex-col items-center gap-6">
-            <div className="bg-white rounded-[2rem] p-8 shadow-xl border-2 border-brand-100 w-full text-center relative overflow-hidden">
+            <div className="bg-white rounded-[2rem] p-8 shadow-xl border-2 border-brand-100 w-full text-center">
               <h2 className="text-brand-400 font-bold tracking-widest mb-4 uppercase">문제 {round}</h2>
-              {loading ? <div className="h-40 flex items-center justify-center"><Icons.Loader className="w-10 h-10 text-brand-400 animate-spin" /></div> : 
+              {loading ? <div className="h-40 flex items-center justify-center"><IconLoader /></div> : 
               <div className="py-8 bg-brand-50 rounded-3xl border border-brand-100 mb-6">
-                  <div className="flex justify-center mb-4"><div className="bg-white p-3 rounded-2xl shadow-sm text-brand-500"><Icons.Grid className="w-8 h-8" /></div></div>
+                  <div className="flex justify-center mb-4"><div className="bg-white p-3 rounded-2xl shadow-sm text-brand-500"><IconGrid /></div></div>
                   <div className="text-4xl md:text-5xl font-display text-brand-700 mb-2">{category}</div>
                   <p className="text-brand-900/40 text-sm font-medium">이 주제에 맞는 단어를 만들어보세요!</p>
               </div>}
               {showExamples && <div className="bg-accent-light/50 p-4 rounded-xl border border-accent animate-pop mb-6">
-                  <h4 className="text-sm font-bold text-brand-800 mb-2 flex items-center justify-center gap-1"><Icons.Lightbulb className="w-4 h-4 text-accent" /> 추천 단어</h4>
+                  <h4 className="text-sm font-bold text-brand-800 mb-2 flex items-center justify-center gap-1"><IconLightbulb /> 추천 단어</h4>
                   <div className="flex flex-wrap justify-center gap-2">{examples.map((ex, idx) => <span key={idx} className="bg-white text-brand-900 px-3 py-1 rounded-full text-lg font-display shadow-sm border border-brand-100">{ex}</span>)}</div>
               </div>}
               <div className="grid gap-3">
-                  {!showExamples && <Button onClick={handleShowExamples} variant="secondary" className="w-full" disabled={loading || loadingExamples}>{loadingExamples ? <Icons.Loader className="animate-spin w-5 h-5"/> : <Icons.Lightbulb className="w-5 h-5" />} 추천 단어 보기</Button>}
-                  <Button onClick={handleNext} variant="success" className="w-full" disabled={loading}>다음 문제 <Icons.ArrowRight className="w-5 h-5" /></Button>
+                  {!showExamples && <Button onClick={() => setShowExamples(true)} variant="secondary" className="w-full" disabled={loading}><IconLightbulb /> 추천 단어 보기</Button>}
+                  <Button onClick={handleNext} variant="success" className="w-full" disabled={loading}>다음 문제 <IconArrowRight /></Button>
               </div>
             </div>
-            <Button onClick={() => onGameOver({score: 0, correct: 0, wrong: 0})} variant="secondary" className="mt-4 text-sm py-2">그만하기</Button>
+            <Button onClick={() => onGameOver({score: 0})} variant="secondary" className="mt-4 text-sm py-2">그만하기</Button>
           </div>
         );
       };
 
-      const SpeedGame = ({ difficulty, onGameOver }) => {
+      const SpeedGame = ({ onGameOver }) => {
         const [words, setWords] = useState([]);
         const [currentIndex, setCurrentIndex] = useState(0);
         const [loading, setLoading] = useState(true);
@@ -468,113 +385,95 @@
         const [score, setScore] = useState(0);
         const timerRef = useRef(null);
 
-        useEffect(() => { initGame(); return () => clearInterval(timerRef.current); }, []);
+        useEffect(() => {
+            setLoading(true);
+            try {
+                if (speedDeck.length < 10) speedDeck = shuffle(SPEED_WORDS_POOL);
+                const selected = speedDeck.splice(0, 10);
+                if (selected.length < 10) { // 부족하면 채우기
+                    speedDeck = shuffle(SPEED_WORDS_POOL);
+                    selected.push(...speedDeck.splice(0, 10 - selected.length));
+                }
+                setWords(selected.map((w, i) => ({...w, id: i})));
+                setGameActive(true);
+            } catch(e) {
+                setWords([{text: "오류", hint: "다시시도"}]);
+            }
+            setLoading(false);
+            return () => clearInterval(timerRef.current);
+        }, []);
+
         useEffect(() => {
           if (gameActive && timeLeft > 0) {
               timerRef.current = setInterval(() => {
-                  setTimeLeft(prev => { if (prev <= 1) { endGame(); return 0; } return prev - 1; });
+                  setTimeLeft(prev => { if (prev <= 1) { setGameActive(false); clearInterval(timerRef.current); onGameOver({ score }); return 0; } return prev - 1; });
               }, 1000);
           }
           return () => clearInterval(timerRef.current);
         }, [gameActive]);
 
-        const initGame = async () => {
-          setLoading(true); 
-          try {
-            const data = await fetchSpeedWords(difficulty);
-            setWords(data); 
-            setLoading(false); 
-            setGameActive(true);
-          } catch(e) {
-            // Error fallback
-            setWords([{id: 'err', text: '오류', hint: 'Error'}]);
-            setLoading(false);
-          }
-        };
-
-        const endGame = () => { setGameActive(false); clearInterval(timerRef.current); onGameOver({ score, correct: score / 10, wrong: 0, streak: 0 }); };
         const handleNextWord = () => { if (!gameActive) return; setScore(p => p + 10); nextCard(); };
         const handlePass = () => { if (!gameActive) return; nextCard(); };
-        const nextCard = () => { if (currentIndex < words.length - 1) setCurrentIndex(p => p + 1); else setCurrentIndex(Math.floor(Math.random() * words.length)); };
+        const nextCard = () => { if (currentIndex < words.length - 1) setCurrentIndex(p => p + 1); else setCurrentIndex(0); };
 
-        if (loading) return <div className="flex flex-col items-center justify-center h-64 text-brand-800"><Icons.Loader className="w-12 h-12 mb-4 animate-spin" /><p className="font-display text-xl animate-pulse text-brand-500">주문서를 가져오는 중...</p></div>;
-        const currentWord = words[currentIndex] || { text: "준비중", hint: "Loading" };
+        if (loading) return <div className="flex flex-col items-center justify-center h-64 text-brand-800"><IconLoader /><p className="font-display text-xl animate-pulse text-brand-500">주문서를 가져오는 중...</p></div>;
+        const currentWord = words[currentIndex] || {text: '준비중', hint: '...'};
 
         return (
           <div className="w-full max-w-lg mx-auto flex flex-col items-center gap-6">
             <div className="flex items-center gap-2 bg-brand-600 text-white px-6 py-2 rounded-full font-bold text-xl shadow-lg border-2 border-brand-400">
-               <Icons.Timer className={`w-6 h-6 ${timeLeft < 10 ? 'animate-pulse text-accent' : ''}`} /><span>{timeLeft}초</span>
+               <IconTimer /><span>{timeLeft}초</span>
             </div>
             <div className="w-full bg-white rounded-[2.5rem] p-8 shadow-xl border-4 border-brand-100 text-center relative overflow-hidden flex flex-col items-center min-h-[320px] justify-center">
-               <div className="mb-4 flex flex-col items-center"><div className="bg-brand-50 p-4 rounded-full mb-2 shadow-inner"><Icons.Sparkles className="w-8 h-8 text-accent" /></div><div className="text-sm text-brand-300 font-bold tracking-widest uppercase">Make this word</div></div>
                <div className="py-6 w-full my-2"><div className="text-6xl md:text-7xl font-display text-brand-900 mb-4 drop-shadow-sm leading-tight">{currentWord.text}</div><div className="text-brand-400 font-medium text-lg bg-brand-50 inline-block px-4 py-1 rounded-full">{currentWord.hint}</div></div>
                <p className="text-brand-900/30 text-xs mt-2 font-medium">빨리 만들고 '다음문제' 버튼을 누르세요!</p>
             </div>
             <div className="grid grid-cols-2 gap-4 w-full px-2">
-               <button onClick={handlePass} className="h-20 rounded-2xl border-2 border-brand-100 text-brand-300 font-display text-xl hover:bg-brand-50 active:scale-95 transition-all flex flex-col items-center justify-center gap-1"><Icons.XCircle className="w-6 h-6 opacity-50" /><span>패스</span></button>
-               <button onClick={handleNextWord} className="h-20 rounded-2xl bg-accent text-brand-900 font-display text-2xl shadow-[0_4px_0_0_#d97706] hover:bg-accent-hover active:shadow-none active:translate-y-[4px] transition-all flex flex-col items-center justify-center gap-1"><Icons.ArrowRight className="w-6 h-6" /><span>다음문제</span></button>
+               <button onClick={handlePass} className="h-20 rounded-2xl border-2 border-brand-100 text-brand-300 font-display text-xl hover:bg-brand-50 active:scale-95 transition-all flex flex-col items-center justify-center gap-1"><IconX /><span>패스</span></button>
+               <button onClick={handleNextWord} className="h-20 rounded-2xl bg-accent text-brand-900 font-display text-2xl shadow-[0_4px_0_0_#d97706] hover:bg-accent-hover active:shadow-none active:translate-y-[4px] transition-all flex flex-col items-center justify-center gap-1"><IconArrowRight /><span>다음문제</span></button>
             </div>
           </div>
         );
       };
 
-      // --- APP ---
       const App = () => {
-        const [currentGame, setCurrentGame] = useState(GameType.NONE);
-        const [difficulty, setDifficulty] = useState(Difficulty.EASY);
+        const [currentGame, setCurrentGame] = useState('NONE');
         const [lastStats, setLastStats] = useState(null);
 
         const startGame = (type) => { setCurrentGame(type); setLastStats(null); };
         const handleGameOver = (stats) => { setLastStats(stats); };
-        const resetToMenu = () => { setCurrentGame(GameType.NONE); setLastStats(null); };
+        const resetToMenu = () => { setCurrentGame('NONE'); setLastStats(null); };
 
         return (
           <div className="min-h-screen font-sans text-gray-800 flex flex-col bg-brand-50 selection:bg-brand-200">
             <header className="bg-white/80 backdrop-blur-md sticky top-0 z-20 border-b border-brand-100 shadow-sm">
               <div className="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
                 <div className="flex items-center gap-3 cursor-pointer group" onClick={resetToMenu}>
-                  <div className="bg-brand-500 text-white p-2 rounded-xl shadow-md group-hover:scale-110 transition-transform"><Icons.Cookie className="w-6 h-6" /></div>
+                  <div className="bg-brand-500 text-white p-2 rounded-xl shadow-md group-hover:scale-110 transition-transform"><IconCookie /></div>
                   <h1 className="text-xl md:text-2xl font-display text-brand-900 tracking-tight mt-1">한글과자 아케이드</h1>
                 </div>
-                {currentGame !== GameType.NONE && <button onClick={resetToMenu} className="text-brand-400 hover:text-brand-600 transition-colors p-2 bg-brand-50 rounded-xl hover:bg-brand-100"><Icons.ArrowLeft className="w-6 h-6" /></button>}
+                {currentGame !== 'NONE' && <button onClick={resetToMenu} className="text-brand-400 hover:text-brand-600 transition-colors p-2 bg-brand-50 rounded-xl hover:bg-brand-100"><IconArrowLeft /></button>}
               </div>
             </header>
 
             <main className="flex-1 container mx-auto px-4 py-8 flex flex-col items-center justify-start max-w-4xl">
-              {currentGame === GameType.NONE ? (
+              {currentGame === 'NONE' ? (
                 <div className="w-full flex flex-col gap-8 animate-pop py-4">
                   <section className="text-center space-y-4 mb-4">
                      <h2 className="text-4xl md:text-5xl font-display text-brand-900 drop-shadow-sm leading-tight"><span className="text-brand-500">AI</span>와 함께하는<br/>한글 과자 놀이</h2>
                      <p className="text-brand-800/60 text-lg font-medium">문제를 내드릴게요, 과자로 맞춰보세요!</p>
                   </section>
-                  <div className="bg-white p-6 rounded-[2rem] border border-brand-100 shadow-sm">
-                      <label className="flex items-center gap-2 text-sm font-bold text-brand-400 mb-4 uppercase tracking-wider justify-center"><Icons.Sparkles className="w-4 h-4" /> 난이도 선택 (Difficulty)</label>
-                      <div className="grid grid-cols-3 gap-3 md:gap-6">
-                          {[{ id: Difficulty.EASY, label: '순한맛', desc: '초급', color: 'bg-green-100 text-green-700 ring-green-200' },
-                            { id: Difficulty.MEDIUM, label: '중간맛', desc: '중급', color: 'bg-yellow-100 text-yellow-700 ring-yellow-200' },
-                            { id: Difficulty.HARD, label: '매운맛', desc: '고급', color: 'bg-red-100 text-red-700 ring-red-200' }].map(d => (
-                                  <button key={d.id} onClick={() => setDifficulty(d.id)} className={`relative px-2 py-4 md:px-6 rounded-2xl border-2 text-center transition-all active:scale-95 ${difficulty === d.id ? `${d.color} ring-2 ring-offset-2 border-transparent shadow-md font-bold` : 'bg-gray-50 text-gray-400 border-gray-100 hover:bg-white hover:border-brand-200'}`}>
-                                  <div className="font-display text-lg md:text-xl mb-1">{d.label}</div>
-                                  <div className="text-xs opacity-80 hidden md:block">{d.desc}</div>
-                                  {difficulty === d.id && <div className="absolute -top-2 -right-2 bg-white rounded-full p-1 shadow-sm text-brand-500"><Icons.Star className="w-4 h-4 fill-current" /></div>}
-                                  </button>
-                          ))}
-                      </div>
-                  </div>
                   <div className="grid md:grid-cols-3 gap-4">
-                    <button onClick={() => startGame(GameType.INITIAL)} className="group relative bg-brand-100 hover:bg-brand-200 p-6 rounded-[2rem] transition-all duration-300 border-2 border-brand-200 hover:border-brand-300 active:scale-95 text-left overflow-hidden shadow-sm h-64 flex flex-col justify-between">
-                       <div className="absolute -top-4 -right-4 text-brand-300/30 group-hover:scale-110 transition-transform duration-500 rotate-12"><Icons.Align className="w-24 h-24" /></div>
-                       <div className="bg-white w-12 h-12 rounded-2xl flex items-center justify-center text-brand-600 shadow-sm"><Icons.Align className="w-6 h-6" /></div>
+                    <button onClick={() => startGame('INITIAL')} className="group relative bg-brand-100 hover:bg-brand-200 p-6 rounded-[2rem] transition-all duration-300 border-2 border-brand-200 hover:border-brand-300 active:scale-95 text-left overflow-hidden shadow-sm h-64 flex flex-col justify-between">
+                       <div className="bg-white w-12 h-12 rounded-2xl flex items-center justify-center text-brand-600 shadow-sm"><IconAlign /></div>
                        <div className="relative z-10"><h3 className="text-2xl font-display text-brand-900 mb-1">초성 게임</h3><p className="text-brand-800/80 font-medium text-sm leading-snug">제시된 초성을 보고<br/>단어를 만들어보세요.</p></div>
                     </button>
-                    <button onClick={() => startGame(GameType.CATEGORY)} className="group relative bg-violet-100 hover:bg-violet-200 p-6 rounded-[2rem] transition-all duration-300 border-2 border-violet-200 hover:border-violet-300 active:scale-95 text-left overflow-hidden shadow-sm h-64 flex flex-col justify-between">
-                       <div className="absolute -top-4 -right-4 text-violet-300/30 group-hover:scale-110 transition-transform duration-500 -rotate-12"><Icons.Grid className="w-24 h-24" /></div>
-                       <div className="bg-white w-12 h-12 rounded-2xl flex items-center justify-center text-violet-600 shadow-sm"><Icons.Grid className="w-6 h-6" /></div>
+                    <button onClick={() => startGame('CATEGORY')} className="group relative bg-violet-100 hover:bg-violet-200 p-6 rounded-[2rem] transition-all duration-300 border-2 border-violet-200 hover:border-violet-300 active:scale-95 text-left overflow-hidden shadow-sm h-64 flex flex-col justify-between">
+                       <div className="bg-white w-12 h-12 rounded-2xl flex items-center justify-center text-violet-600 shadow-sm"><IconGrid /></div>
                        <div className="relative z-10"><h3 className="text-2xl font-display text-violet-900 mb-1">카테고리</h3><p className="text-violet-900/80 font-medium text-sm leading-snug">주제에 맞는<br/>단어를 찾아보세요.</p></div>
                     </button>
-                    <button onClick={() => startGame(GameType.SPEED)} className="group relative bg-accent/30 hover:bg-accent/50 p-6 rounded-[2rem] transition-all duration-300 border-2 border-accent hover:border-accent-hover active:scale-95 text-left overflow-hidden shadow-sm h-64 flex flex-col justify-between">
-                       <div className="absolute -top-4 -right-4 text-accent/30 group-hover:scale-110 transition-transform duration-500 rotate-6"><Icons.Zap className="w-24 h-24" /></div>
-                       <div className="bg-white w-12 h-12 rounded-2xl flex items-center justify-center text-yellow-600 shadow-sm"><Icons.Zap className="w-6 h-6" /></div>
+                    <button onClick={() => startGame('SPEED')} className="group relative bg-accent/30 hover:bg-accent/50 p-6 rounded-[2rem] transition-all duration-300 border-2 border-accent hover:border-accent-hover active:scale-95 text-left overflow-hidden shadow-sm h-64 flex flex-col justify-between">
+                       <div className="bg-white w-12 h-12 rounded-2xl flex items-center justify-center text-yellow-600 shadow-sm"><IconZap /></div>
                        <div className="relative z-10"><h3 className="text-2xl font-display text-brand-900 mb-1">단어 짓기</h3><p className="text-brand-900/80 font-medium text-sm leading-snug">제시된 단어를<br/>누구보다 빠르게!</p></div>
                     </button>
                   </div>
@@ -583,11 +482,8 @@
                 <div className="w-full flex flex-col items-center">
                    {lastStats ? (
                       <div className="max-w-md w-full bg-white rounded-[2.5rem] shadow-xl p-8 text-center animate-pop border-4 border-brand-100 relative mt-10">
-                          <div className="absolute -top-12 left-1/2 transform -translate-x-1/2">
-                               <div className="w-24 h-24 bg-accent rounded-full flex items-center justify-center border-4 border-white shadow-lg text-brand-900 animate-bounce-slight"><Icons.Trophy className="w-12 h-12" /></div>
-                          </div>
+                          <div className="absolute -top-12 left-1/2 transform -translate-x-1/2"><div className="w-24 h-24 bg-accent rounded-full flex items-center justify-center border-4 border-white shadow-lg text-brand-900 animate-bounce-slight"><IconTrophy /></div></div>
                           <h2 className="text-3xl font-display text-gray-800 mb-2 mt-10">게임 종료!</h2>
-                          <p className="text-gray-400 font-medium mb-8">재미있게 놀았나요?</p>
                           <div className="space-y-3">
                               <Button onClick={() => startGame(currentGame)} variant="success" className="w-full shadow-lg shadow-accent/20">다시 하기</Button>
                               <Button onClick={resetToMenu} variant="secondary" className="w-full">메뉴로 나가기</Button>
@@ -595,13 +491,9 @@
                       </div>
                    ) : (
                       <>
-                          <div className="mb-6 flex items-center gap-2 px-4 py-1.5 bg-white/80 backdrop-blur-sm rounded-full shadow-sm border border-brand-100 text-xs font-bold text-brand-800 uppercase tracking-wide">
-                               <span className={`w-2 h-2 rounded-full ${difficulty === Difficulty.EASY ? 'bg-green-500' : difficulty === Difficulty.MEDIUM ? 'bg-yellow-500' : 'bg-red-500'}`}></span>
-                              <span>{difficulty === Difficulty.EASY ? '순한맛 (Easy)' : difficulty === Difficulty.MEDIUM ? '중간맛 (Medium)' : '매운맛 (Hard)'}</span>
-                          </div>
-                          {currentGame === GameType.INITIAL && <InitialGame difficulty={difficulty} onGameOver={handleGameOver} onBack={resetToMenu} />}
-                          {currentGame === GameType.CATEGORY && <CategoryGame difficulty={difficulty} onGameOver={handleGameOver} />}
-                          {currentGame === GameType.SPEED && <SpeedGame difficulty={difficulty} onGameOver={handleGameOver} />}
+                          {currentGame === 'INITIAL' && <InitialGame onGameOver={handleGameOver} />}
+                          {currentGame === 'CATEGORY' && <CategoryGame onGameOver={handleGameOver} />}
+                          {currentGame === 'SPEED' && <SpeedGame onGameOver={handleGameOver} />}
                       </>
                    )}
                 </div>
@@ -612,7 +504,6 @@
         );
       };
 
-      // --- MOUNT ---
       const root = ReactDOM.createRoot(document.getElementById('root'));
       root.render(<App />);
     </script>
