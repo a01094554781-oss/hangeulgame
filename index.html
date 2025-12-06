@@ -3,10 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hangul Cookie Arcade</title>
+    <title>한글과자 아케이드</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind Config -->
     <script>
       tailwind.config = {
         theme: {
@@ -17,21 +19,12 @@
             },
             colors: {
               brand: {
-                50: '#faf5ff', // purple-50
-                100: '#f3e8ff',
-                200: '#e9d5ff',
-                300: '#d8b4fe',
-                400: '#c084fc',
-                500: '#a855f7', // purple-500
-                600: '#9333ea',
-                700: '#7e22ce',
-                800: '#6b21a8',
-                900: '#581c87',
+                50: '#faf5ff', 100: '#f3e8ff', 200: '#e9d5ff', 300: '#d8b4fe',
+                400: '#c084fc', 500: '#a855f7', 600: '#9333ea', 700: '#7e22ce',
+                800: '#6b21a8', 900: '#581c87',
               },
               accent: {
-                DEFAULT: '#facc15', // yellow-400
-                hover: '#eab308', // yellow-500
-                light: '#fef08a', // yellow-200
+                DEFAULT: '#facc15', hover: '#eab308', light: '#fef08a',
               }
             },
             animation: {
@@ -52,26 +45,540 @@
         },
       }
     </script>
+    
     <style>
       body {
-        background-color: #faf5ff; /* brand-50 */
+        background-color: #faf5ff;
         background-image: radial-gradient(#e9d5ff 1px, transparent 1px);
         background-size: 24px 24px;
       }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0",
-    "react/": "https://aistudiocdn.com/react@^19.2.1/",
-    "react": "https://aistudiocdn.com/react@^19.2.1",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/"
-  }
-}
-</script>
-</head>
+
+    <!-- Import Map for External Libraries -->
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.2.0",
+        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+        "lucide-react": "https://esm.sh/lucide-react@0.263.1"
+      }
+    }
+    </script>
+  </head>
   <body>
     <div id="root"></div>
-    <script type="text/babel" data-presets="react,typescript" data-type="module" src="./index.tsx"></script>
+
+    <!-- MAIN APP SCRIPT -->
+    <script type="text/babel" data-type="module">
+      import React, { useState, useEffect, useRef } from 'react';
+      import ReactDOM from 'react-dom/client';
+      import { 
+        Cookie, Grid2X2, ArrowLeft, Trophy, Sparkles, Star, Zap, AlignCenterHorizontal,
+        Loader2, Lightbulb, RefreshCw, ArrowRight, Timer, XCircle
+      } from 'lucide-react';
+
+      // --- TYPES ---
+      const GameType = {
+        NONE: 'NONE',
+        INITIAL: 'INITIAL',
+        CATEGORY: 'CATEGORY',
+        SPEED: 'SPEED',
+      };
+
+      const Difficulty = {
+        EASY: 'EASY',
+        MEDIUM: 'MEDIUM',
+        HARD: 'HARD',
+      };
+
+      // --- DATA ---
+      const INITIAL_DATA = [
+        { initial: "ㄱ ㅅ", examples: ["감사", "구슬", "고수", "가슴", "기술", "기숙", "개선", "공사", "기사", "간식"] },
+        { initial: "ㅇ ㅈ", examples: ["의자", "우주", "아주", "여자", "연주", "인정", "유저", "옷장", "운전", "이전"] },
+        { initial: "ㅎ ㄱ", examples: ["한글", "학교", "한강", "휴가", "항공", "해골", "환경", "현관", "향기", "후기"] },
+        { initial: "ㅂ ㄴ", examples: ["비누", "배낭", "바늘", "보노", "분노", "본능", "밤눈", "배달", "비닐", "반납"] },
+        { initial: "ㅅ ㄱ", examples: ["사과", "수건", "시간", "시계", "소금", "성공", "수고", "사기", "수강", "세계"] },
+        { initial: "ㅁ ㅈ", examples: ["모자", "문자", "먼지", "맥주", "문제", "명절", "마중", "무지", "매주", "목주"] },
+        { initial: "ㄱ ㅈ", examples: ["가족", "과자", "공장", "감자", "계절", "간장", "거울", "가지", "기적", "고장"] },
+        { initial: "ㅇ ㄹ", examples: ["우리", "요리", "여름", "어른", "이름", "오리", "연락", "유리", "아래", "의뢰"] },
+        { initial: "ㅈ ㄷ", examples: ["지도", "정답", "전등", "장독", "중독", "자동", "작동", "지대", "제도", "절대"] },
+        { initial: "ㅂ ㅈ", examples: ["바지", "반지", "부자", "배추", "박자", "반장", "봉지", "부정", "보장", "병정"] },
+        { initial: "ㅅ ㅁ", examples: ["사막", "선물", "수면", "설명", "식물", "소망", "신문", "소문", "승마", "실내"] },
+        { initial: "ㅎ ㄴ", examples: ["하늘", "흉내", "훈남", "호남", "하녀", "학년", "효녀", "후년", "한눈", "희망"] },
+        { initial: "ㄷ ㄹ", examples: ["다리", "도로", "달력", "대륙", "도루", "달리기", "동료", "대리", "둘리", "단락"] },
+        { initial: "ㄱ ㅁ", examples: ["거미", "구멍", "고무", "가망", "고민", "국물", "가면", "경마", "골목", "교문"] },
+        { initial: "ㅇ ㄱ", examples: ["야구", "연기", "악기", "안경", "입구", "얼굴", "아기", "일기", "인구", "인기"] },
+        { initial: "ㅈ ㄱ", examples: ["지구", "장구", "전기", "저녁", "자국", "조각", "작가", "전공", "주기", "장갑"] },
+        { initial: "ㅊ ㄱ", examples: ["축구", "친구", "천국", "출구", "초기", "총기", "추구", "최고", "철구", "창고"] },
+        { initial: "ㅍ ㄷ", examples: ["포도", "파동", "폭동", "파도", "판돈", "필독", "평등", "풀독", "포대", "폭도"] },
+        { initial: "ㅋ ㅍ", examples: ["커피", "쿠폰", "카피", "캠프", "키퍼", "큰폭", "코피", "쿵푸", "컴퓨터"] },
+        { initial: "ㄴ ㅁ", examples: ["나무", "나머지", "남매", "눈물", "농민", "낭만", "내무", "너머", "노모", "논문"] },
+        { initial: "ㄷ ㅈ", examples: ["돼지", "동전", "된장", "도장", "단장", "도전", "대장", "단지", "동장", "동점"] },
+        { initial: "ㄹ ㄷ", examples: ["라디오", "랜턴", "리듬", "롯데", "레드", "리더", "런던", "로동", "레이다", "리들"] },
+        { initial: "ㅁ ㄱ", examples: ["미국", "몽골", "물감", "모기", "무기", "만개", "미각", "무게", "망고", "목구멍"] },
+        { initial: "ㅂ ㅎ", examples: ["비행기", "방학", "번호", "병원", "백화점", "보호", "변화", "부활", "배회", "반항"] },
+        { initial: "ㅇ ㅇ", examples: ["우유", "오이", "여우", "아이", "이유", "언어", "운영", "인형", "여행", "예약"] },
+        { initial: "ㄱ ㄱ", examples: ["고기", "건강", "감기", "경기", "국기", "광고", "구경", "가곡", "공구", "기간"] },
+        { initial: "ㄴ ㄴ", examples: ["누나", "나나", "남녀", "내년", "나눔", "노노", "낙농", "녹내장", "남남"] },
+        { initial: "ㄷ ㄷ", examples: ["도둑", "당당", "대답", "단독", "도달", "대두", "담당", "동동", "두통"] },
+        { initial: "ㅂ ㅂ", examples: ["부부", "방법", "바보", "비빔", "반복", "부분", "발발", "보보", "배배"] },
+        { initial: "ㅅ ㅅ", examples: ["사슴", "사실", "생선", "소설", "수술", "세상", "상상", "실수", "식사", "순서"] },
+        { initial: "ㅈ ㅈ", examples: ["자주", "직장", "전쟁", "지진", "제주", "주전자", "전자", "조직", "저장", "재정"] },
+        { initial: "ㅊ ㅊ", examples: ["추천", "최초", "친척", "청춘", "침체", "출처", "차창", "척추", "천체"] },
+        { initial: "ㅎ ㅎ", examples: ["하하", "호호", "후회", "화해", "흔한", "현황", "황혼", "협회", "항해", "흑백"] },
+        { initial: "ㅁ ㅁ", examples: ["문명", "미모", "마마", "무명", "매매", "목명", "문맥", "마무리", "모모"] },
+        { initial: "ㅍ ㄹ", examples: ["파란", "포로", "피로", "폭력", "편리", "풍력", "파리", "피리", "표류", "펄럭"] },
+        { initial: "ㅌ ㄲ", examples: ["토끼", "터키", "티켓", "태권", "특권", "토큰", "통쾌"] },
+        { initial: "ㅁ ㄹ", examples: ["머리", "모래", "미래", "물리", "무리", "마루", "무릎", "몰래", "밀랍", "명령"] },
+        { initial: "ㅂ ㄷ", examples: ["바다", "배달", "반대", "바닥", "복도", "부대", "빈대", "본당", "부도", "비대"] },
+        { initial: "ㅅ ㅇ", examples: ["수영", "시월", "수업", "상어", "사업", "사용", "석유", "신용", "소음", "승인"] },
+        { initial: "ㅎ ㅈ", examples: ["휴지", "화장", "회장", "현재", "형제", "혼자", "행정", "흔적", "협조", "화재"] },
+        { initial: "ㅈ ㅅ", examples: ["주소", "점심", "자신", "장소", "조심", "전설", "정성", "재산", "죄송", "짐승"] },
+        { initial: "ㅊ ㅋ", examples: ["치킨", "체크", "차키", "초코", "축카", "체키"] },
+        { initial: "ㄱ ㅊ", examples: ["김치", "기차", "경찰", "고추", "건축", "가출", "관찰", "교체", "근처", "기초"] },
+        { initial: "ㄴ ㅈ", examples: ["남자", "낮잠", "내장", "농장", "냉장고", "나중", "낙조", "난장"] },
+        { initial: "ㄷ ㅎ", examples: ["대학", "대화", "도형", "대회", "동화", "단합", "다행", "독해", "당황"] }
+      ];
+
+      const CATEGORY_DATA = [
+        { category: "과일", examples: ["사과", "포도", "바나나", "수박", "딸기", "복숭아", "참외", "멜론", "귤", "배"] },
+        { category: "동물", examples: ["호랑이", "사자", "토끼", "강아지", "고양이", "코끼리", "기린", "곰", "여우", "늑대"] },
+        { category: "나라", examples: ["한국", "미국", "일본", "중국", "프랑스", "독일", "영국", "이탈리아", "캐나다", "호주"] },
+        { category: "운동", examples: ["축구", "농구", "야구", "수영", "배구", "테니스", "골프", "탁구", "태권도", "배드민턴"] },
+        { category: "색깔", examples: ["빨강", "파랑", "노랑", "초록", "보라", "검정", "하양", "분홍", "주황", "회색"] },
+        { category: "학교", examples: ["연필", "지우개", "칠판", "책상", "선생님", "공책", "가방", "필통", "급식", "교복"] },
+        { category: "음식", examples: ["피자", "치킨", "햄버거", "라면", "김밥", "비빔밥", "떡볶이", "스파게티", "초밥", "만두"] },
+        { category: "직업", examples: ["의사", "선생님", "경찰관", "소방관", "요리사", "가수", "배우", "과학자", "운동선수", "변호사"] },
+        { category: "탈것", examples: ["버스", "택시", "기차", "비행기", "자전거", "오토바이", "지하철", "배", "헬리콥터", "트럭"] },
+        { category: "가전제품", examples: ["냉장고", "세탁기", "청소기", "에어컨", "밥솥", "전자레인지", "텔레비전", "선풍기", "컴퓨터", "드라이기"] },
+        { category: "학용품", examples: ["가위", "풀", "자", "볼펜", "필통", "색연필", "노트", "지우개", "샤프", "크레파스", "물감"] },
+        { category: "악기", examples: ["피아노", "기타", "바이올린", "드럼", "플루트", "하프", "단소", "리코더", "첼로", "트럼펫"] },
+        { category: "날씨", examples: ["맑음", "흐림", "비", "눈", "바람", "태풍", "번개", "안개", "우박", "장마"] },
+        { category: "감정", examples: ["기쁨", "슬픔", "화남", "놀람", "무서움", "행복", "사랑", "우울", "긴장", "부끄러움"] },
+        { category: "신체", examples: ["눈", "코", "입", "귀", "손", "발", "머리", "어깨", "무릎", "배"] },
+        { category: "가구", examples: ["침대", "식탁", "의자", "소파", "책장", "서랍장", "옷장", "화장대", "거울", "책상"] },
+        { category: "야채/채소", examples: ["오이", "당근", "양파", "파", "마늘", "배추", "무", "감자", "고구마", "호박"] },
+        { category: "간식", examples: ["과자", "초콜릿", "사탕", "젤리", "아이스크림", "케이크", "빵", "쿠키", "푸딩", "요거트"] },
+        { category: "꽃", examples: ["장미", "해바라기", "무궁화", "벚꽃", "진달래", "개나리", "튤립", "백합", "국화", "카네이션"] },
+        { category: "장소", examples: ["공원", "학교", "집", "병원", "도서관", "마트", "영화관", "놀이터", "수영장", "박물관"] },
+        { category: "음료", examples: ["물", "우유", "주스", "콜라", "사이다", "커피", "녹차", "홍차", "코코아", "스무디"] },
+        { category: "곤충", examples: ["개미", "나비", "벌", "잠자리", "매미", "무당벌레", "사마귀", "장수풍뎅이", "사슴벌레", "파리"] },
+        { category: "바다생물", examples: ["물고기", "오징어", "문어", "고래", "상어", "조개", "새우", "게", "불가사리", "해파리"] },
+        { category: "부엌용품", examples: ["냄비", "후라이팬", "국자", "도마", "칼", "접시", "그릇", "컵", "숟가락", "젓가락"] },
+        { category: "편의점", examples: ["삼각김밥", "컵라면", "도시락", "샌드위치", "햄버거", "음료수", "과자", "껌", "사탕", "아이스크림"] },
+        { category: "캠핑용품", examples: ["텐트", "침낭", "코펠", "버너", "의자", "테이블", "랜턴", "아이스박스", "돗자리", "망치"] },
+        { category: "영화장르", examples: ["액션", "코미디", "공포", "로맨스", "만화", "애니메이션", "다큐멘터리", "전쟁", "SF", "판타지"] },
+        { category: "보석", examples: ["다이아몬드", "루비", "사파이어", "에메랄드", "진주", "금", "은", "수정", "호박", "옥"] },
+        { category: "우주", examples: ["태양", "지구", "달", "별", "화성", "목성", "토성", "금성", "수성", "천왕성"] },
+        { category: "계절/시간", examples: ["봄", "여름", "가을", "겨울", "아침", "점심", "저녁", "밤", "새벽", "오전"] }
+      ];
+
+      const SPEED_WORDS_POOL = [
+        { text: "과자", hint: "Snack" }, { text: "가방", hint: "Bag" }, { text: "가위", hint: "Scissors" },
+        { text: "거울", hint: "Mirror" }, { text: "구름", hint: "Cloud" }, { text: "김치", hint: "Kimchi" },
+        { text: "경찰", hint: "Police" }, { text: "기차", hint: "Train" }, { text: "공책", hint: "Notebook" },
+        { text: "가족", hint: "Family" }, { text: "구두", hint: "Shoes" }, { text: "국기", hint: "Flag" },
+        { text: "고기", hint: "Meat" }, { text: "가을", hint: "Autumn" }, { text: "겨울", hint: "Winter" },
+        { text: "공원", hint: "Park" }, { text: "공항", hint: "Airport" }, { text: "가수", hint: "Singer" },
+        { text: "가게", hint: "Store" }, { text: "그림", hint: "Picture" }, { text: "구슬", hint: "Marble" },
+        { text: "감자", hint: "Potato" }, { text: "고구마", hint: "Sweet Potato" }, { text: "귤", hint: "Tangerine" },
+        { text: "나무", hint: "Tree" }, { text: "나비", hint: "Butterfly" }, { text: "낚시", hint: "Fishing" },
+        { text: "남자", hint: "Man" }, { text: "날씨", hint: "Weather" }, { text: "노래", hint: "Song" },
+        { text: "눈사람", hint: "Snowman" }, { text: "농구", hint: "Basketball" },
+        { text: "냉장고", hint: "Refrigerator" }, { text: "냄비", hint: "Pot" }, { text: "누나", hint: "Older Sister" },
+        { text: "남동생", hint: "Younger Brother" }, { text: "눈", hint: "Eye/Snow" }, { text: "날개", hint: "Wing" },
+        { text: "다리", hint: "Bridge/Leg" }, { text: "달력", hint: "Calendar" }, { text: "도서관", hint: "Library" },
+        { text: "도시락", hint: "Lunch box" }, { text: "돼지", hint: "Pig" }, { text: "동물원", hint: "Zoo" },
+        { text: "두부", hint: "Tofu" }, { text: "딸기", hint: "Strawberry" }, { text: "떡볶이", hint: "Spicy Rice Cake" },
+        { text: "달", hint: "Moon" }, { text: "당근", hint: "Carrot" }, { text: "도넛", hint: "Donut" },
+        { text: "동화", hint: "Fairy Tale" }, { text: "동전", hint: "Coin" }, { text: "대문", hint: "Gate" },
+        { text: "라디오", hint: "Radio" }, { text: "라면", hint: "Ramen" }, { text: "로봇", hint: "Robot" },
+        { text: "리모컨", hint: "Remote Control" }, { text: "레몬", hint: "Lemon" }, { text: "리본", hint: "Ribbon" },
+        { text: "마음", hint: "Mind/Heart" }, { text: "모자", hint: "Hat" }, { text: "무지개", hint: "Rainbow" },
+        { text: "문", hint: "Door" }, { text: "물", hint: "Water" }, { text: "미국", hint: "USA" },
+        { text: "미술", hint: "Art" }, { text: "머리", hint: "Head" },
+        { text: "마을", hint: "Village" }, { text: "마트", hint: "Mart" }, { text: "만두", hint: "Dumpling" },
+        { text: "말", hint: "Horse/Word" }, { text: "모기", hint: "Mosquito" }, { text: "목걸이", hint: "Necklace" },
+        { text: "무", hint: "Radish" }, { text: "물고기", hint: "Fish" },
+        { text: "바나나", hint: "Banana" }, { text: "바다", hint: "Sea" }, { text: "바람", hint: "Wind" },
+        { text: "박수", hint: "Clap" }, { text: "반지", hint: "Ring" }, { text: "발", hint: "Foot" },
+        { text: "배", hint: "Ship/Pear/Belly" }, { text: "버스", hint: "Bus" }, { text: "병원", hint: "Hospital" },
+        { text: "비행기", hint: "Airplane" }, { text: "빵", hint: "Bread" },
+        { text: "방", hint: "Room" }, { text: "밤", hint: "Night/Chestnut" }, { text: "밥", hint: "Rice" },
+        { text: "바지", hint: "Pants" }, { text: "비누", hint: "Soap" }, { text: "비", hint: "Rain" },
+        { text: "뱀", hint: "Snake" }, { text: "별", hint: "Star" }, { text: "불", hint: "Fire" },
+        { text: "사과", hint: "Apple" }, { text: "사랑", hint: "Love" }, { text: "사진", hint: "Photo" },
+        { text: "산", hint: "Mountain" }, { text: "선물", hint: "Gift" }, { text: "선생님", hint: "Teacher" },
+        { text: "소방관", hint: "Firefighter" }, { text: "손", hint: "Hand" }, { text: "수박", hint: "Watermelon" },
+        { text: "수영", hint: "Swimming" }, { text: "시간", hint: "Time" }, { text: "시계", hint: "Clock" },
+        { text: "신발", hint: "Shoes" },
+        { text: "사자", hint: "Lion" }, { text: "사탕", hint: "Candy" }, { text: "새", hint: "Bird" },
+        { text: "색종이", hint: "Colored Paper" }, { text: "소", hint: "Cow" }, { text: "소금", hint: "Salt" },
+        { text: "숟가락", hint: "Spoon" }, { text: "숲", hint: "Forest" }, { text: "스키", hint: "Ski" },
+        { text: "아기", hint: "Baby" }, { text: "아빠", hint: "Dad" }, { text: "아이스크림", hint: "Ice Cream" },
+        { text: "안경", hint: "Glasses" }, { text: "약국", hint: "Pharmacy" }, { text: "양말", hint: "Socks" },
+        { text: "어머니", hint: "Mother" }, { text: "얼굴", hint: "Face" }, { text: "여름", hint: "Summer" },
+        { text: "여행", hint: "Travel" }, { text: "연필", hint: "Pencil" }, { text: "영화", hint: "Movie" },
+        { text: "우산", hint: "Umbrella" }, { text: "우유", hint: "Milk" }, { text: "운동", hint: "Exercise" },
+        { text: "의자", hint: "Chair" }, { text: "이불", hint: "Blanket" }, { text: "인형", hint: "Doll" },
+        { text: "악어", hint: "Crocodile" }, { text: "앞치마", hint: "Apron" }, { text: "약", hint: "Medicine" },
+        { text: "엘리베이터", hint: "Elevator" }, { text: "여우", hint: "Fox" }, { text: "연", hint: "Kite" },
+        { text: "오리", hint: "Duck" }, { text: "오이", hint: "Cucumber" }, { text: "옷", hint: "Clothes" },
+        { text: "왕", hint: "King" }, { text: "요리사", hint: "Cook" }, { text: "우체국", hint: "Post Office" },
+        { text: "원숭이", hint: "Monkey" }, { text: "은행", hint: "Bank" }, { text: "입", hint: "Mouth" },
+        { text: "자전거", hint: "Bicycle" }, { text: "자동차", hint: "Car" }, { text: "장갑", hint: "Gloves" },
+        { text: "장난감", hint: "Toy" }, { text: "전화", hint: "Telephone" }, { text: "접시", hint: "Plate" },
+        { text: "지갑", hint: "Wallet" }, { text: "지도", hint: "Map" }, { text: "지우개", hint: "Eraser" },
+        { text: "집", hint: "House" },
+        { text: "잠자리", hint: "Dragonfly" }, { text: "저녁", hint: "Dinner" }, { text: "주스", hint: "Juice" },
+        { text: "쥐", hint: "Mouse" }, { text: "지하철", hint: "Subway" }, { text: "창문", hint: "Window" },
+        { text: "책", hint: "Book" }, { text: "책상", hint: "Desk" }, { text: "청소기", hint: "Vacuum Cleaner" }, 
+        { text: "축구", hint: "Soccer" }, { text: "친구", hint: "Friend" }, { text: "치과", hint: "Dentist" }, 
+        { text: "치마", hint: "Skirt" }, { text: "칫솔", hint: "Toothbrush" },
+        { text: "참새", hint: "Sparrow" }, { text: "천사", hint: "Angel" }, { text: "초콜릿", hint: "Chocolate" },
+        { text: "치즈", hint: "Cheese" }, { text: "치킨", hint: "Chicken" }, { text: "칠판", hint: "Blackboard" },
+        { text: "카메라", hint: "Camera" }, { text: "컴퓨터", hint: "Computer" }, { text: "코", hint: "Nose" },
+        { text: "코끼리", hint: "Elephant" }, { text: "케이크", hint: "Cake" },
+        { text: "칼", hint: "Knife" }, { text: "캥거루", hint: "Kangaroo" }, { text: "컵", hint: "Cup" },
+        { text: "콩", hint: "Bean" }, { text: "크레파스", hint: "Crayon" }, { text: "키위", hint: "Kiwi" },
+        { text: "택시", hint: "Taxi" }, { text: "태권도", hint: "Taekwondo" }, { text: "텔레비전", hint: "TV" },
+        { text: "토끼", hint: "Rabbit" }, { text: "토마토", hint: "Tomato" },
+        { text: "타조", hint: "Ostrich" }, { text: "태양", hint: "Sun" }, { text: "트럭", hint: "Truck" },
+        { text: "티셔츠", hint: "T-shirt" },
+        { text: "파", hint: "Green Onion" }, { text: "파랑", hint: "Blue" }, { text: "편지", hint: "Letter" },
+        { text: "포도", hint: "Grape" }, { text: "피아노", hint: "Piano" }, { text: "피자", hint: "Pizza" },
+        { text: "파인애플", hint: "Pineapple" }, { text: "펭귄", hint: "Penguin" }, { text: "포크", hint: "Fork" },
+        { text: "표", hint: "Ticket" }, { text: "풀", hint: "Glue/Grass" }, { text: "풍선", hint: "Balloon" },
+        { text: "학교", hint: "School" }, { text: "한국", hint: "Korea" }, { text: "할머니", hint: "Grandmother" },
+        { text: "햄버거", hint: "Hamburger" }, { text: "호랑이", hint: "Tiger" }, { text: "화장실", hint: "Restroom" },
+        { text: "회사", hint: "Company" }, { text: "휴지", hint: "Tissue" },
+        { text: "하마", hint: "Hippo" }, { text: "하늘", hint: "Sky" }, { text: "해", hint: "Sun" },
+        { text: "해바라기", hint: "Sunflower" }, { text: "호박", hint: "Pumpkin" }, { text: "화가", hint: "Painter" },
+        { text: "화분", hint: "Flowerpot" }
+      ];
+
+      // --- UTILS ---
+      const shuffle = (array) => [...array].sort(() => Math.random() - 0.5);
+
+      // State for Deck System
+      let initialDeck = [];
+      let categoryDeck = [];
+      let speedDeck = [];
+
+      const getNextItemFromDeck = (deck, masterData, refillThreshold = 0) => {
+        let currentDeck = deck;
+        if (currentDeck.length <= refillThreshold) {
+            currentDeck = shuffle(masterData);
+        }
+        const item = currentDeck.pop();
+        return { item, newDeck: currentDeck };
+      };
+
+      const generateInitials = async (difficulty) => {
+        await new Promise(resolve => setTimeout(resolve, 300));
+        if (initialDeck.length === 0) initialDeck = shuffle(INITIAL_DATA);
+        const { item, newDeck } = getNextItemFromDeck(initialDeck, INITIAL_DATA);
+        initialDeck = newDeck;
+        return item.initial;
+      };
+
+      const generateInitialExamples = async (initials) => {
+        await new Promise(resolve => setTimeout(resolve, 200));
+        const item = INITIAL_DATA.find(d => d.initial === initials);
+        return item ? shuffle(item.examples).slice(0, 6) : ["데이터 없음"];
+      };
+
+      const generateCategory = async (difficulty) => {
+        await new Promise(resolve => setTimeout(resolve, 300));
+        if (categoryDeck.length === 0) categoryDeck = shuffle(CATEGORY_DATA);
+        const { item, newDeck } = getNextItemFromDeck(categoryDeck, CATEGORY_DATA);
+        categoryDeck = newDeck;
+        return item.category;
+      };
+
+      const generateCategoryExamples = async (category) => {
+        await new Promise(resolve => setTimeout(resolve, 200));
+        const item = CATEGORY_DATA.find(d => d.category === category);
+        return item ? shuffle(item.examples).slice(0, 6) : ["데이터 없음"];
+      };
+
+      const fetchSpeedWords = async (difficulty) => {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        if (speedDeck.length < 10) speedDeck = shuffle(SPEED_WORDS_POOL);
+        const selected = speedDeck.splice(0, 10);
+        return selected.map((item, idx) => ({
+            id: `speed-${Date.now()}-${idx}`,
+            text: item.text,
+            hint: item.hint
+        }));
+      };
+
+      // --- COMPONENTS ---
+      const Button = ({ children, variant = 'primary', size = 'md', className = '', ...props }) => {
+        const baseStyles = "font-display rounded-2xl shadow-[0_4px_0_0_rgba(0,0,0,0.1)] active:shadow-none active:translate-y-[4px] transition-all duration-150 flex items-center justify-center gap-2";
+        const variants = {
+          primary: "bg-brand-500 text-white hover:bg-brand-600 border-2 border-brand-600",
+          secondary: "bg-white text-brand-700 hover:bg-brand-50 border-2 border-brand-200",
+          danger: "bg-red-400 text-white hover:bg-red-500 border-2 border-red-500",
+          success: "bg-accent text-brand-900 hover:bg-accent-hover border-2 border-accent-hover",
+        };
+        const sizes = { sm: "px-3 py-1 text-sm", md: "px-6 py-3 text-lg", lg: "px-8 py-4 text-xl" };
+        return (
+          <button className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`} {...props}>
+            {children}
+          </button>
+        );
+      };
+
+      // --- VIEWS ---
+      const InitialGame = ({ difficulty, onGameOver, onBack }) => {
+        const [initials, setInitials] = useState('');
+        const [loading, setLoading] = useState(false);
+        const [examples, setExamples] = useState([]);
+        const [showExamples, setShowExamples] = useState(false);
+        const [loadingExamples, setLoadingExamples] = useState(false);
+        const [round, setRound] = useState(1);
+
+        useEffect(() => { loadNewInitials(); }, []);
+
+        const loadNewInitials = async () => {
+          setLoading(true); setExamples([]); setShowExamples(false);
+          const newInitials = await generateInitials(difficulty);
+          setInitials(newInitials);
+          setLoading(false);
+        };
+
+        const handleShowExamples = async () => {
+          if (showExamples) return;
+          setLoadingExamples(true);
+          const exs = await generateInitialExamples(initials);
+          setExamples(exs); setShowExamples(true); setLoadingExamples(false);
+        };
+
+        const handleNext = () => { setRound(p => p + 1); loadNewInitials(); };
+
+        return (
+          <div className="w-full max-w-lg mx-auto flex flex-col items-center gap-6">
+            <div className="bg-white rounded-[2rem] p-8 shadow-xl border-2 border-brand-100 w-full text-center relative overflow-hidden">
+              <h2 className="text-brand-400 font-bold tracking-widest mb-4 uppercase flex items-center justify-center gap-2"><span>문제 {round}</span></h2>
+              {loading ? <div className="h-40 flex items-center justify-center"><Loader2 className="w-10 h-10 text-brand-400 animate-spin" /></div> : 
+              <div className="py-8 bg-brand-50 rounded-3xl border border-brand-100 mb-6">
+                  <div className="text-6xl md:text-7xl font-display text-brand-600 tracking-[0.2em]">{initials}</div>
+                  <p className="text-brand-900/40 text-sm font-medium mt-4">이 초성으로 단어를 만들어보세요!</p>
+              </div>}
+              {showExamples && <div className="bg-accent-light/50 p-4 rounded-xl border border-accent animate-pop mb-6">
+                  <h4 className="text-sm font-bold text-brand-800 mb-2 flex items-center justify-center gap-1"><Lightbulb className="w-4 h-4 text-accent" /> 정답 예시</h4>
+                  <div className="flex flex-wrap justify-center gap-2">{examples.map((ex, idx) => <span key={idx} className="bg-white text-brand-900 px-3 py-1 rounded-full text-lg font-display shadow-sm border border-brand-100">{ex}</span>)}</div>
+              </div>}
+              <div className="grid gap-3">
+                  {!showExamples && <Button onClick={handleShowExamples} variant="secondary" className="w-full" disabled={loading || loadingExamples}>{loadingExamples ? <Loader2 className="animate-spin w-5 h-5"/> : <Lightbulb className="w-5 h-5" />} 예시 정답 보기</Button>}
+                  <Button onClick={handleNext} variant="success" className="w-full" disabled={loading}>다음 문제 <ArrowRight className="w-5 h-5" /></Button>
+              </div>
+            </div>
+            <Button onClick={() => onGameOver({score: 0, correct: 0, wrong: 0})} variant="secondary" className="mt-4 text-sm py-2">그만하기</Button>
+          </div>
+        );
+      };
+
+      const CategoryGame = ({ difficulty, onGameOver }) => {
+        const [category, setCategory] = useState('');
+        const [loading, setLoading] = useState(false);
+        const [examples, setExamples] = useState([]);
+        const [showExamples, setShowExamples] = useState(false);
+        const [loadingExamples, setLoadingExamples] = useState(false);
+        const [round, setRound] = useState(1);
+
+        useEffect(() => { loadCategory(); }, []);
+
+        const loadCategory = async () => {
+          setLoading(true); setExamples([]); setShowExamples(false);
+          const newCat = await generateCategory(difficulty);
+          setCategory(newCat); setLoading(false);
+        };
+
+        const handleShowExamples = async () => {
+          if (showExamples) return;
+          setLoadingExamples(true);
+          const exs = await generateCategoryExamples(category);
+          setExamples(exs); setShowExamples(true); setLoadingExamples(false);
+        };
+
+        const handleNext = () => { setRound(p => p + 1); loadCategory(); };
+
+        return (
+          <div className="w-full max-w-lg mx-auto flex flex-col items-center gap-6">
+            <div className="bg-white rounded-[2rem] p-8 shadow-xl border-2 border-brand-100 w-full text-center relative overflow-hidden">
+              <h2 className="text-brand-400 font-bold tracking-widest mb-4 uppercase">문제 {round}</h2>
+              {loading ? <div className="h-40 flex items-center justify-center"><Loader2 className="w-10 h-10 text-brand-400 animate-spin" /></div> : 
+              <div className="py-8 bg-brand-50 rounded-3xl border border-brand-100 mb-6">
+                  <div className="flex justify-center mb-4"><div className="bg-white p-3 rounded-2xl shadow-sm text-brand-500"><Grid2X2 className="w-8 h-8" /></div></div>
+                  <div className="text-4xl md:text-5xl font-display text-brand-700 mb-2">{category}</div>
+                  <p className="text-brand-900/40 text-sm font-medium">이 주제에 맞는 단어를 만들어보세요!</p>
+              </div>}
+              {showExamples && <div className="bg-accent-light/50 p-4 rounded-xl border border-accent animate-pop mb-6">
+                  <h4 className="text-sm font-bold text-brand-800 mb-2 flex items-center justify-center gap-1"><Lightbulb className="w-4 h-4 text-accent" /> 추천 단어</h4>
+                  <div className="flex flex-wrap justify-center gap-2">{examples.map((ex, idx) => <span key={idx} className="bg-white text-brand-900 px-3 py-1 rounded-full text-lg font-display shadow-sm border border-brand-100">{ex}</span>)}</div>
+              </div>}
+              <div className="grid gap-3">
+                  {!showExamples && <Button onClick={handleShowExamples} variant="secondary" className="w-full" disabled={loading || loadingExamples}>{loadingExamples ? <Loader2 className="animate-spin w-5 h-5"/> : <Lightbulb className="w-5 h-5" />} 추천 단어 보기</Button>}
+                  <Button onClick={handleNext} variant="success" className="w-full" disabled={loading}>다음 문제 <ArrowRight className="w-5 h-5" /></Button>
+              </div>
+            </div>
+            <Button onClick={() => onGameOver({score: 0, correct: 0, wrong: 0})} variant="secondary" className="mt-4 text-sm py-2">그만하기</Button>
+          </div>
+        );
+      };
+
+      const SpeedGame = ({ difficulty, onGameOver }) => {
+        const [words, setWords] = useState([]);
+        const [currentIndex, setCurrentIndex] = useState(0);
+        const [loading, setLoading] = useState(true);
+        const [timeLeft, setTimeLeft] = useState(60);
+        const [gameActive, setGameActive] = useState(false);
+        const [score, setScore] = useState(0);
+        const timerRef = useRef(null);
+
+        useEffect(() => { initGame(); return () => clearInterval(timerRef.current); }, []);
+        useEffect(() => {
+          if (gameActive && timeLeft > 0) {
+              timerRef.current = setInterval(() => {
+                  setTimeLeft(prev => { if (prev <= 1) { endGame(); return 0; } return prev - 1; });
+              }, 1000);
+          }
+          return () => clearInterval(timerRef.current);
+        }, [gameActive]);
+
+        const initGame = async () => {
+          setLoading(true); const data = await fetchSpeedWords(difficulty);
+          setWords(data); setLoading(false); setGameActive(true);
+        };
+
+        const endGame = () => { setGameActive(false); clearInterval(timerRef.current); onGameOver({ score, correct: score / 10, wrong: 0, streak: 0 }); };
+        const handleNextWord = () => { if (!gameActive) return; setScore(p => p + 10); nextCard(); };
+        const handlePass = () => { if (!gameActive) return; nextCard(); };
+        const nextCard = () => { if (currentIndex < words.length - 1) setCurrentIndex(p => p + 1); else setCurrentIndex(Math.floor(Math.random() * words.length)); };
+
+        if (loading) return <div className="flex flex-col items-center justify-center h-64 text-brand-800"><Loader2 className="w-12 h-12 animate-spin mb-4" /><p className="font-display text-xl animate-pulse text-brand-500">주문서를 가져오는 중...</p></div>;
+        const currentWord = words[currentIndex];
+
+        return (
+          <div className="w-full max-w-lg mx-auto flex flex-col items-center gap-6">
+            <div className="flex items-center gap-2 bg-brand-600 text-white px-6 py-2 rounded-full font-bold text-xl shadow-lg border-2 border-brand-400">
+               <Timer className={`w-6 h-6 ${timeLeft < 10 ? 'animate-pulse text-accent' : ''}`} /><span>{timeLeft}초</span>
+            </div>
+            <div className="w-full bg-white rounded-[2.5rem] p-8 shadow-xl border-4 border-brand-100 text-center relative overflow-hidden flex flex-col items-center min-h-[320px] justify-center">
+               <div className="mb-4 flex flex-col items-center"><div className="bg-brand-50 p-4 rounded-full mb-2 shadow-inner"><Sparkles className="w-8 h-8 text-accent" /></div><div className="text-sm text-brand-300 font-bold tracking-widest uppercase">Make this word</div></div>
+               <div className="py-6 w-full my-2"><div className="text-6xl md:text-7xl font-display text-brand-900 mb-4 drop-shadow-sm leading-tight">{currentWord?.text}</div><div className="text-brand-400 font-medium text-lg bg-brand-50 inline-block px-4 py-1 rounded-full">{currentWord?.hint}</div></div>
+               <p className="text-brand-900/30 text-xs mt-2 font-medium">빨리 만들고 '다음문제' 버튼을 누르세요!</p>
+            </div>
+            <div className="grid grid-cols-2 gap-4 w-full px-2">
+               <button onClick={handlePass} className="h-20 rounded-2xl border-2 border-brand-100 text-brand-300 font-display text-xl hover:bg-brand-50 active:scale-95 transition-all flex flex-col items-center justify-center gap-1"><XCircle className="w-6 h-6 opacity-50" /><span>패스</span></button>
+               <button onClick={handleNextWord} className="h-20 rounded-2xl bg-accent text-brand-900 font-display text-2xl shadow-[0_4px_0_0_#d97706] hover:bg-accent-hover active:shadow-none active:translate-y-[4px] transition-all flex flex-col items-center justify-center gap-1"><ArrowRight className="w-6 h-6" /><span>다음문제</span></button>
+            </div>
+          </div>
+        );
+      };
+
+      // --- APP ---
+      const App = () => {
+        const [currentGame, setCurrentGame] = useState(GameType.NONE);
+        const [difficulty, setDifficulty] = useState(Difficulty.EASY);
+        const [lastStats, setLastStats] = useState(null);
+
+        const startGame = (type) => { setCurrentGame(type); setLastStats(null); };
+        const handleGameOver = (stats) => { setLastStats(stats); };
+        const resetToMenu = () => { setCurrentGame(GameType.NONE); setLastStats(null); };
+
+        return (
+          <div className="min-h-screen font-sans text-gray-800 flex flex-col bg-brand-50 selection:bg-brand-200">
+            <header className="bg-white/80 backdrop-blur-md sticky top-0 z-20 border-b border-brand-100 shadow-sm">
+              <div className="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+                <div className="flex items-center gap-3 cursor-pointer group" onClick={resetToMenu}>
+                  <div className="bg-brand-500 text-white p-2 rounded-xl shadow-md group-hover:scale-110 transition-transform"><Cookie className="w-6 h-6" /></div>
+                  <h1 className="text-xl md:text-2xl font-display text-brand-900 tracking-tight mt-1">한글과자 아케이드</h1>
+                </div>
+                {currentGame !== GameType.NONE && <button onClick={resetToMenu} className="text-brand-400 hover:text-brand-600 transition-colors p-2 bg-brand-50 rounded-xl hover:bg-brand-100"><ArrowLeft className="w-6 h-6" /></button>}
+              </div>
+            </header>
+
+            <main className="flex-1 container mx-auto px-4 py-8 flex flex-col items-center justify-start max-w-4xl">
+              {currentGame === GameType.NONE ? (
+                <div className="w-full flex flex-col gap-8 animate-pop py-4">
+                  <section className="text-center space-y-4 mb-4">
+                     <h2 className="text-4xl md:text-5xl font-display text-brand-900 drop-shadow-sm leading-tight"><span className="text-brand-500">AI</span>와 함께하는<br/>한글 과자 놀이</h2>
+                     <p className="text-brand-800/60 text-lg font-medium">문제를 내드릴게요, 과자로 맞춰보세요!</p>
+                  </section>
+                  <div className="bg-white p-6 rounded-[2rem] border border-brand-100 shadow-sm">
+                      <label className="flex items-center gap-2 text-sm font-bold text-brand-400 mb-4 uppercase tracking-wider justify-center"><Sparkles className="w-4 h-4" /> 난이도 선택 (Difficulty)</label>
+                      <div className="grid grid-cols-3 gap-3 md:gap-6">
+                          {[{ id: Difficulty.EASY, label: '순한맛', desc: '초급', color: 'bg-green-100 text-green-700 ring-green-200' },
+                            { id: Difficulty.MEDIUM, label: '중간맛', desc: '중급', color: 'bg-yellow-100 text-yellow-700 ring-yellow-200' },
+                            { id: Difficulty.HARD, label: '매운맛', desc: '고급', color: 'bg-red-100 text-red-700 ring-red-200' }].map(d => (
+                                  <button key={d.id} onClick={() => setDifficulty(d.id)} className={`relative px-2 py-4 md:px-6 rounded-2xl border-2 text-center transition-all active:scale-95 ${difficulty === d.id ? `${d.color} ring-2 ring-offset-2 border-transparent shadow-md font-bold` : 'bg-gray-50 text-gray-400 border-gray-100 hover:bg-white hover:border-brand-200'}`}>
+                                  <div className="font-display text-lg md:text-xl mb-1">{d.label}</div>
+                                  <div className="text-xs opacity-80 hidden md:block">{d.desc}</div>
+                                  {difficulty === d.id && <div className="absolute -top-2 -right-2 bg-white rounded-full p-1 shadow-sm text-brand-500"><Star className="w-4 h-4 fill-current" /></div>}
+                                  </button>
+                          ))}
+                      </div>
+                  </div>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <button onClick={() => startGame(GameType.INITIAL)} className="group relative bg-brand-100 hover:bg-brand-200 p-6 rounded-[2rem] transition-all duration-300 border-2 border-brand-200 hover:border-brand-300 active:scale-95 text-left overflow-hidden shadow-sm h-64 flex flex-col justify-between">
+                       <div className="absolute -top-4 -right-4 text-brand-300/30 group-hover:scale-110 transition-transform duration-500 rotate-12"><AlignCenterHorizontal size={120} /></div>
+                       <div className="bg-white w-12 h-12 rounded-2xl flex items-center justify-center text-brand-600 shadow-sm"><AlignCenterHorizontal className="w-6 h-6"/></div>
+                       <div className="relative z-10"><h3 className="text-2xl font-display text-brand-900 mb-1">초성 게임</h3><p className="text-brand-800/80 font-medium text-sm leading-snug">제시된 초성을 보고<br/>단어를 만들어보세요.</p></div>
+                    </button>
+                    <button onClick={() => startGame(GameType.CATEGORY)} className="group relative bg-violet-100 hover:bg-violet-200 p-6 rounded-[2rem] transition-all duration-300 border-2 border-violet-200 hover:border-violet-300 active:scale-95 text-left overflow-hidden shadow-sm h-64 flex flex-col justify-between">
+                       <div className="absolute -top-4 -right-4 text-violet-300/30 group-hover:scale-110 transition-transform duration-500 -rotate-12"><Grid2X2 size={120} /></div>
+                       <div className="bg-white w-12 h-12 rounded-2xl flex items-center justify-center text-violet-600 shadow-sm"><Grid2X2 className="w-6 h-6"/></div>
+                       <div className="relative z-10"><h3 className="text-2xl font-display text-violet-900 mb-1">카테고리</h3><p className="text-violet-900/80 font-medium text-sm leading-snug">주제에 맞는<br/>단어를 찾아보세요.</p></div>
+                    </button>
+                    <button onClick={() => startGame(GameType.SPEED)} className="group relative bg-accent/30 hover:bg-accent/50 p-6 rounded-[2rem] transition-all duration-300 border-2 border-accent hover:border-accent-hover active:scale-95 text-left overflow-hidden shadow-sm h-64 flex flex-col justify-between">
+                       <div className="absolute -top-4 -right-4 text-accent/30 group-hover:scale-110 transition-transform duration-500 rotate-6"><Zap size={120} /></div>
+                       <div className="bg-white w-12 h-12 rounded-2xl flex items-center justify-center text-yellow-600 shadow-sm"><Zap className="w-6 h-6"/></div>
+                       <div className="relative z-10"><h3 className="text-2xl font-display text-brand-900 mb-1">단어 짓기</h3><p className="text-brand-900/80 font-medium text-sm leading-snug">제시된 단어를<br/>누구보다 빠르게!</p></div>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="w-full flex flex-col items-center">
+                   {lastStats ? (
+                      <div className="max-w-md w-full bg-white rounded-[2.5rem] shadow-xl p-8 text-center animate-pop border-4 border-brand-100 relative mt-10">
+                          <div className="absolute -top-12 left-1/2 transform -translate-x-1/2">
+                               <div className="w-24 h-24 bg-accent rounded-full flex items-center justify-center border-4 border-white shadow-lg text-brand-900 animate-bounce-slight"><Trophy className="w-12 h-12" /></div>
+                          </div>
+                          <h2 className="text-3xl font-display text-gray-800 mb-2 mt-10">게임 종료!</h2>
+                          <p className="text-gray-400 font-medium mb-8">재미있게 놀았나요?</p>
+                          <div className="space-y-3">
+                              <Button onClick={() => startGame(currentGame)} variant="success" className="w-full shadow-lg shadow-accent/20">다시 하기</Button>
+                              <Button onClick={resetToMenu} variant="secondary" className="w-full">메뉴로 나가기</Button>
+                          </div>
+                      </div>
+                   ) : (
+                      <>
+                          <div className="mb-6 flex items-center gap-2 px-4 py-1.5 bg-white/80 backdrop-blur-sm rounded-full shadow-sm border border-brand-100 text-xs font-bold text-brand-800 uppercase tracking-wide">
+                               <span className={`w-2 h-2 rounded-full ${difficulty === Difficulty.EASY ? 'bg-green-500' : difficulty === Difficulty.MEDIUM ? 'bg-yellow-500' : 'bg-red-500'}`}></span>
+                              <span>{difficulty === Difficulty.EASY ? '순한맛 (Easy)' : difficulty === Difficulty.MEDIUM ? '중간맛 (Medium)' : '매운맛 (Hard)'}</span>
+                          </div>
+                          {currentGame === GameType.INITIAL && <InitialGame difficulty={difficulty} onGameOver={handleGameOver} onBack={resetToMenu} />}
+                          {currentGame === GameType.CATEGORY && <CategoryGame difficulty={difficulty} onGameOver={handleGameOver} />}
+                          {currentGame === GameType.SPEED && <SpeedGame difficulty={difficulty} onGameOver={handleGameOver} />}
+                      </>
+                   )}
+                </div>
+              )}
+            </main>
+            <footer className="py-8 text-center text-brand-900/20 text-sm font-display"><p>Hangul Cookie Arcade Remake</p></footer>
+          </div>
+        );
+      };
+
+      // --- MOUNT ---
+      const rootElement = document.getElementById('root');
+      if (rootElement) {
+        const root = ReactDOM.createRoot(rootElement);
+        root.render(<App />);
+      }
+    </script>
   </body>
 </html>
